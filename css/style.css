@@ -46,7 +46,7 @@ pre {
 
 code {
     font-family: 'Open Sans';
-    font-size: 20px;
+    font-size: 16px !important;
 }
 
 /* Site nav */
