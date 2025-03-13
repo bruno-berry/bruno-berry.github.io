@@ -36,7 +36,7 @@ pre {
     border: 1px solid lightgrey;
     border-radius: 6px;
     overflow-x: auto;
-    padding: 8px 12px;
+    padding: 12px 12px;
     margin-bottom: 20px;
     display: block;
     max-width: 860px;
@@ -46,7 +46,7 @@ pre {
 
 code {
     font-family: 'Open Sans';
-    font-size: 16px;
+    font-size: 15px;
 }
 
 /* Site nav */
