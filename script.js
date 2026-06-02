@@ -92,12 +92,57 @@
     var mCo = document.getElementById('m-co');
     var mTitle = document.getElementById('m-title');
     var mMeta = document.getElementById('m-meta');
-    var mImg = document.getElementById('m-img');
+    var mCar = document.getElementById('m-carousel');
     var mBody = document.getElementById('m-body');
     var lastFocus = null;
 
     // project content lives in window.MISC (defined inline in the page)
     var DATA = window.MISC || {};
+
+    // carousel state for the currently open modal
+    var car = { imgs: [], i: 0 };
+
+    function renderCarousel() {
+      var n = car.imgs.length;
+      var track = mCar.querySelector('.carousel__track');
+      track.style.transform = 'translateX(' + (-car.i * 100) + '%)';
+      var dots = mCar.querySelectorAll('.carousel__dot');
+      dots.forEach(function (d, idx) { d.classList.toggle('active', idx === car.i); });
+      var count = mCar.querySelector('.carousel__count');
+      if (count) count.textContent = (car.i + 1) + ' / ' + n;
+    }
+    function goTo(idx) {
+      var n = car.imgs.length;
+      if (!n) return;
+      car.i = (idx + n) % n;
+      renderCarousel();
+    }
+    function buildCarousel(imgs, title) {
+      car.imgs = imgs || [];
+      car.i = 0;
+      if (!car.imgs.length) { mCar.style.display = 'none'; mCar.innerHTML = ''; return; }
+      var slides = car.imgs.map(function (src, idx) {
+        return '<div class="carousel__slide"><img src="' + src + '" alt="' + title + ' — image ' + (idx + 1) + '" loading="lazy" /></div>';
+      }).join('');
+      var multi = car.imgs.length > 1;
+      var dots = multi ? '<div class="carousel__dots">' + car.imgs.map(function (_, idx) {
+        return '<button class="carousel__dot" aria-label="Go to image ' + (idx + 1) + '"></button>';
+      }).join('') + '</div>' : '';
+      var nav = multi ?
+        '<button class="carousel__btn carousel__btn--prev" aria-label="Previous image">\u2039</button>' +
+        '<button class="carousel__btn carousel__btn--next" aria-label="Next image">\u203a</button>' +
+        '<div class="carousel__count"></div>' : '';
+      mCar.innerHTML = '<div class="carousel__viewport"><div class="carousel__track">' + slides + '</div>' + nav + '</div>' + dots;
+      mCar.style.display = 'block';
+      if (multi) {
+        mCar.querySelector('.carousel__btn--prev').addEventListener('click', function () { goTo(car.i - 1); });
+        mCar.querySelector('.carousel__btn--next').addEventListener('click', function () { goTo(car.i + 1); });
+        mCar.querySelectorAll('.carousel__dot').forEach(function (d, idx) {
+          d.addEventListener('click', function () { goTo(idx); });
+        });
+      }
+      renderCarousel();
+    }
 
     function openModal(key) {
       var d = DATA[key];
@@ -106,8 +151,7 @@
       mCo.textContent = d.co;
       mTitle.textContent = d.title;
       mMeta.innerHTML = d.meta.map(function (m) { return '<span>' + m + '</span>'; }).join('');
-      if (d.img) { mImg.src = d.img; mImg.alt = d.title; mImg.style.display = 'block'; }
-      else { mImg.removeAttribute('src'); mImg.style.display = 'none'; }
+      buildCarousel(d.imgs || (d.img ? [d.img] : []), d.title);
       mBody.innerHTML = d.body;
       if (mCard) mCard.scrollTop = 0;
       modal.classList.add('open');
@@ -120,6 +164,7 @@
       modal.classList.remove('open');
       modal.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      car.imgs = [];
       if (lastFocus) lastFocus.focus();
     }
     document.querySelectorAll('[data-modal]').forEach(function (t) {
@@ -128,7 +173,10 @@
     modal.querySelector('.modal__back').addEventListener('click', closeModal);
     modal.querySelector('.modal__close').addEventListener('click', closeModal);
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+      if (!modal.classList.contains('open')) return;
+      if (e.key === 'Escape') closeModal();
+      else if (e.key === 'ArrowLeft' && car.imgs.length > 1) goTo(car.i - 1);
+      else if (e.key === 'ArrowRight' && car.imgs.length > 1) goTo(car.i + 1);
     });
   }
 
