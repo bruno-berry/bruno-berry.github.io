@@ -184,4 +184,167 @@
   document.querySelectorAll('[data-year]').forEach(function (el) {
     el.textContent = new Date().getFullYear();
   });
+
+  /* ---- justified-rows mosaic for project galleries ----
+     Each tile keeps its image's true aspect ratio; rows scale to
+     fill the width edge-to-edge (no gaps, no cropping). */
+  (function () {
+    var galleries = Array.prototype.slice.call(document.querySelectorAll('.proj-gallery'));
+    if (!galleries.length) return;
+    var GAP = 14;
+
+    function arOf(shot) {
+      var img = shot.querySelector('img');
+      if (img && img.naturalWidth > 0) return img.naturalWidth / img.naturalHeight;
+      var d = parseFloat(shot.getAttribute('data-ar'));
+      return d > 0 ? d : 1.5;
+    }
+
+    function layout(g) {
+      var shots = Array.prototype.slice.call(g.querySelectorAll('.shot'));
+      if (!shots.length) return;
+      var cs = getComputedStyle(g);
+      var cw = g.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      if (cw <= 0) return;
+
+      // very narrow column: single-column natural stack
+      if (cw < 340) {
+        g.classList.add('is-stacked');
+        shots.forEach(function (s) { s.style.width = ''; s.style.height = ''; });
+        return;
+      }
+      g.classList.remove('is-stacked');
+
+      // per-page rhythm: different baseline row height
+      var scale = parseFloat(g.getAttribute('data-rowscale')) || 1;
+      var targetH = Math.max(120, Math.min(320, (cw / 4.2) * scale));
+
+      var row = [], arSum = 0, lastH = targetH;
+      function flush(stretch) {
+        if (!row.length) return;
+        var avail = cw - GAP * (row.length - 1);   // width for tiles (gaps come from flex gap)
+        var rowH = stretch ? avail / arSum : Math.min(targetH, lastH, avail / arSum);
+        if (stretch) lastH = rowH;                   // keep the trailing row in step with full rows
+        var usedW = 0;
+        row.forEach(function (o, i) {
+          var w;
+          if (i === row.length - 1 && stretch) {
+            w = avail - usedW;                       // last tile takes remainder so row is flush
+          } else {
+            w = Math.round(rowH * o.ar);
+            usedW += w;
+          }
+          o.shot.style.width = w + 'px';
+          o.shot.style.height = Math.round(rowH) + 'px';
+        });
+        row = []; arSum = 0;
+      }
+      shots.forEach(function (shot) {
+        var ar = arOf(shot);
+        row.push({ shot: shot, ar: ar });
+        arSum += ar;
+        if (arSum * targetH + GAP * (row.length - 1) >= cw) flush(true);
+      });
+      flush(false); // trailing row keeps target height (not stretched full width)
+    }
+
+    function layoutAll() { galleries.forEach(layout); }
+
+    // relayout as images report their real dimensions (incl. remote ones)
+    document.querySelectorAll('.proj-gallery img').forEach(function (img) {
+      if (!img.complete) {
+        img.addEventListener('load', layoutAll);
+        img.addEventListener('error', layoutAll);
+      }
+    });
+    window.addEventListener('load', layoutAll);
+    var t;
+    window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(layoutAll, 120); });
+    layoutAll();
+  })();
+
+  /* ---- gallery lightbox with carousel ----
+     Clicking any .shot in a .proj-gallery opens a fullscreen viewer.
+     Arrows, dots, keyboard (← → Esc), and backdrop click navigate / close. */
+  (function () {
+    var overlay = document.getElementById('lb');
+    if (!overlay) return;
+
+    var lbImg   = document.getElementById('lb-img');
+    var lbCap   = document.getElementById('lb-cap');
+    var lbCount = document.getElementById('lb-count');
+    var lbPrev  = overlay.querySelector('.lb__prev');
+    var lbNext  = overlay.querySelector('.lb__next');
+    var lbClose = overlay.querySelector('.lb__close');
+
+    var state = { imgs: [], caps: [], i: 0, open: false };
+
+    function show(idx) {
+      var n = state.imgs.length;
+      state.i = ((idx % n) + n) % n;
+      // fade out → swap → fade in
+      lbImg.style.opacity = '0';
+      setTimeout(function () {
+        lbImg.src = state.imgs[state.i];
+        lbImg.alt = state.caps[state.i];
+        lbCap.textContent  = state.caps[state.i];
+        lbCount.textContent = (state.i + 1) + ' \u2013 ' + n;
+        lbImg.style.opacity = '';
+      }, 150);
+    }
+
+    function openLb(imgs, caps, startIdx) {
+      state.imgs = imgs; state.caps = caps; state.i = startIdx; state.open = true;
+      lbImg.style.opacity = '0';
+      lbImg.src = imgs[startIdx];
+      lbImg.alt = caps[startIdx];
+      lbCap.textContent  = caps[startIdx];
+      lbCount.textContent = (startIdx + 1) + ' \u2013 ' + imgs.length;
+      // fade in once image is ready
+      lbImg.onload = lbImg.onerror = function () { lbImg.style.opacity = ''; lbImg.onload = lbImg.onerror = null; };
+      if (lbImg.complete) lbImg.style.opacity = '';
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      lbClose.focus();
+    }
+
+    function closeLb() {
+      state.open = false;
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    // wire every .proj-gallery
+    document.querySelectorAll('.proj-gallery').forEach(function (g) {
+      g.addEventListener('click', function (e) {
+        var shot = e.target.closest('.shot');
+        if (!shot) return;
+        var shots = Array.prototype.slice.call(g.querySelectorAll('.shot'));
+        var imgs  = shots.map(function (s) { return s.querySelector('img').src; });
+        var caps  = shots.map(function (s) {
+          var c = s.querySelector('.shot__cap');
+          return c ? c.textContent : '';
+        });
+        openLb(imgs, caps, shots.indexOf(shot));
+      });
+    });
+
+    lbClose.addEventListener('click', closeLb);
+    lbPrev.addEventListener('click', function () { show(state.i - 1); });
+    lbNext.addEventListener('click', function () { show(state.i + 1); });
+
+    // backdrop click (not on stage content)
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) closeLb();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (!state.open) return;
+      if (e.key === 'Escape')     closeLb();
+      if (e.key === 'ArrowLeft')  show(state.i - 1);
+      if (e.key === 'ArrowRight') show(state.i + 1);
+    });
+  })();
 })();

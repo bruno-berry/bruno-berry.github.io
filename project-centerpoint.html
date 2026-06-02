@@ -43,7 +43,8 @@
       <p class="proj-hero__sum">A complete redesign of CenterPoint Energy’s emergency dispatch experience — consolidating 7 tools into 1, cutting response time from 20+ minutes to under 2, and deploying auto-dispatch that handles 80% of work orders.</p>
     </section>
     <section class="proj-kpis-wrap"><div class="proj-kpis"><div class="kpi"><div class="kpi__n"><span class="s">&lt;</span>2 min</div><div class="kpi__l">order-to-dispatch, from 20+</div></div><div class="kpi"><div class="kpi__n">80<span class="s">%</span></div><div class="kpi__l">orders auto-dispatched</div></div><div class="kpi"><div class="kpi__n">7<span class="s">&rarr;</span>1</div><div class="kpi__l">tools consolidated</div></div></div></section>
-    <div class="proj-cover"><div class="proj-cover__inner"><img src="assets/proj/cp-cover.jpg" alt="CenterPoint Energy Emergency+" /></div></div>
+    <div class="proj-split">
+    <div class="proj-split__left">
     <section class="proj-sec"><div class="proj-sec__grid">
       <div class="proj-sec__label">about</div>
       <div><h2>From 20 minutes to under 2 — end to end</h2><p class="proj-p">CenterPoint’s strategic safety goal is to cut total emergency response to under 20 minutes by 2030. This project tackled the first critical link: from receiving an emergency work order to dispatching a technician.</p><p class="proj-p">Call-center reps juggled 7+ disconnected tools with duplicate workflows, no historical tracking, and no automation. The legacy Dispatch Plus platform was aging, slow, and isolated.</p></div>
@@ -56,7 +57,20 @@
       <div class="proj-sec__label">details</div>
       <div><h2>Outcomes</h2><ul class="proj-list"><li><span class="n">_01</span><span><b>Under 2 min response</b>From 20+ minutes to under 2 minutes, order to dispatch.</span></li><li><span class="n">_02</span><span><b>80%+ auto-dispatch</b>Auto-Dispatch handles the majority of new orders, cutting rep workload.</span></li><li><span class="n">_03</span><span><b>E+ platform launched</b>A modern web platform far more capable than legacy Dispatch Plus.</span></li><li><span class="n">_04</span><span><b>35k+ orders improved</b>An 83% improvement across 35,000+ work orders within 6 months.</span></li></ul></div>
     </div></section>
-    <div class="proj-gallery"><div class="shot shot--feature"><img src="assets/proj/cp-1.jpg" alt="Claim &amp; closest technicians" loading="lazy" /><div class="shot__cap">Claim &amp; closest technicians</div></div><div class="shot"><img src="assets/proj/cp-2.jpg" alt="Dispatch comments" loading="lazy" /><div class="shot__cap">Dispatch comments</div></div><div class="shot"><img src="assets/proj/cp-3.jpg" alt="Technician detail" loading="lazy" /><div class="shot__cap">Technician detail</div></div><div class="shot"><img src="assets/proj/cp-5.jpg" alt="Technician availability" loading="lazy" /><div class="shot__cap">Technician availability</div></div><div class="shot"><img src="assets/proj/cp-6.jpg" alt="Orders map &amp; legend" loading="lazy" /><div class="shot__cap">Orders map &amp; legend</div></div><div class="shot"><img src="assets/proj/cp-4.jpg" alt="Overdue status alerts" loading="lazy" /><div class="shot__cap">Overdue status alerts</div></div></div><section class="proj-next"><a href="project-att-agentic.html"><div><div class="dir">&larr; Previous</div><div class="nm">AT&amp;T Agentic Marketing</div></div><span class="arrow">&larr;</span></a><a href="project-att-fraud.html"><div><div class="dir">Next &rarr;</div><div class="nm">AT&amp;T Fraud Detection</div></div><span class="arrow">&rarr;</span></a></section>  </main>
+    </div>
+    <div class="proj-split__right"><div class="proj-gallery is-stacked" data-rowscale="1.0"><div class="shot" data-ar="1.777"><img src="assets/proj/cp-1.jpg" alt="Claim &amp; closest technicians" loading="lazy" /><div class="shot__cap">Claim &amp; closest technicians</div></div><div class="shot" data-ar="1.777"><img src="assets/proj/cp-2.jpg" alt="Dispatch comments" loading="lazy" /><div class="shot__cap">Dispatch comments</div></div><div class="shot" data-ar="0.914"><img src="assets/proj/cp-5.jpg" alt="Technician availability" loading="lazy" /><div class="shot__cap">Technician availability</div></div><div class="shot" data-ar="1.777"><img src="assets/proj/cp-3.jpg" alt="Technician detail" loading="lazy" /><div class="shot__cap">Technician detail</div></div><div class="shot" data-ar="1.777"><img src="assets/proj/cp-6.jpg" alt="Orders map &amp; legend" loading="lazy" /><div class="shot__cap">Orders map &amp; legend</div></div><div class="shot" data-ar="1.777"><img src="assets/proj/cp-4.jpg" alt="Overdue status alerts" loading="lazy" /><div class="shot__cap">Overdue status alerts</div></div></div></div></div><section class="proj-next"><a href="project-att-agentic.html"><div><div class="dir">&larr; Previous</div><div class="nm">AT&amp;T Agentic Marketing</div></div><span class="arrow">&larr;</span></a><a href="project-att-fraud.html"><div><div class="dir">Next &rarr;</div><div class="nm">AT&amp;T Fraud Detection</div></div><span class="arrow">&rarr;</span></a></section>  
+  <!-- gallery lightbox -->
+  <div id="lb" class="lb" aria-modal="true" role="dialog" aria-hidden="true" aria-label="Image viewer">
+    <button class="lb__close" aria-label="Close viewer">&times;</button>
+    <div class="lb__stage">
+      <button class="lb__prev" aria-label="Previous image">&#8249;</button>
+      <img id="lb-img" class="lb__img" src="" alt="" />
+      <button class="lb__next" aria-label="Next image">&#8250;</button>
+      <div id="lb-cap" class="lb__cap"></div>
+      <div id="lb-count" class="lb__count"></div>
+    </div>
+  </div>
+</main>
 </div>
 <script src="script.js"></script>
 </body>
