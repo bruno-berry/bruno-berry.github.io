@@ -28,7 +28,6 @@
   var selectedId = null;
   var sortKey = 'date', sortDir = -1;   // -1 desc, 1 asc
   var map = null, mapReady = false, pendingFit = null, hoverPopup = null;
-  var charts = [null, null, null, null];
   var endMarkers = [];
 
   // default framing — all activities are in/around NYC
@@ -151,10 +150,13 @@
   }
 
   /* week-over-week sub-KPI: this week's value + a direction arrow vs last week */
-  function trendLine(thisV, lastV, text) {
+  function trendLine(thisV, lastV, text, lowerIsBetter) {
     var dir = thisV > lastV ? 'up' : (thisV < lastV ? 'down' : 'flat');
     var arrow = dir === 'up' ? '▲' : (dir === 'down' ? '▼' : '▬');
-    return '<div class="kpi__trend dir-' + dir + '"><span class="ar">' + arrow + '</span>' +
+    // colour normally tracks the arrow (up=green, down=red); when lower is the
+    // good direction (e.g. pace) flip the colour so a faster week reads green.
+    var tone = lowerIsBetter && dir !== 'flat' ? (dir === 'up' ? 'down' : 'up') : dir;
+    return '<div class="kpi__trend dir-' + tone + '"><span class="ar">' + arrow + '</span>' +
       text + ' <span class="wk">this wk</span></div>';
   }
 
@@ -175,13 +177,18 @@
   }
 
   function agg(list) {
-    var o = { n: list.length, dist: 0, elev: 0, time: 0, cal: 0, hrSum: 0, hrN: 0 };
+    var o = { n: list.length, dist: 0, elev: 0, time: 0, cal: 0, hrSum: 0, hrN: 0,
+              paceSum: 0, paceN: 0, pwrSum: 0, pwrN: 0 };
     list.forEach(function (a) {
       o.dist += a.distance_m || 0; o.elev += a.elev_gain_m || 0;
       o.time += a.moving_s || 0; o.cal += a.calories || 0;
       if (a.avg_hr) { o.hrSum += a.avg_hr; o.hrN++; }
+      if (a.category === 'run' && a.pace_s_per_km) { o.paceSum += a.pace_s_per_km; o.paceN++; }
+      if (a.avg_watts) { o.pwrSum += a.avg_watts; o.pwrN++; }
     });
     o.hr = o.hrN ? o.hrSum / o.hrN : 0;
+    o.pace = o.paceN ? o.paceSum / o.paceN : 0;   // avg run pace, sec/km
+    o.pwr = o.pwrN ? o.pwrSum / o.pwrN : 0;        // avg power, watts
     return o;
   }
 
@@ -243,211 +250,15 @@
             trendLine(wk.a.elev, wk.b.elev, Math.round(wk.a.elev).toLocaleString() + ' m')) +
         kpi(Math.round(all.time / 3600).toLocaleString(), ' h', 'moving time',
             trendLine(wk.a.time, wk.b.time, fmtDurLong(wk.a.time))) +
-        kpi(all.hr ? Math.round(all.hr) : '—', all.hr ? ' bpm' : '', 'avg heart rate',
-            trendLine(wk.a.hr, wk.b.hr, wk.a.hr ? Math.round(wk.a.hr) + ' bpm' : '—')) +
+        kpi(all.pace ? fmtPace(all.pace) : '—', all.pace ? '/km' : '', 'avg run pace',
+            // lower pace is faster → green; higher → red (lowerIsBetter)
+            trendLine(wk.a.pace, wk.b.pace, wk.a.pace ? fmtPace(wk.a.pace) + '/km' : '—', true)) +
+        kpi(all.pwr ? Math.round(all.pwr) : '—', all.pwr ? 'w' : '', 'avg power',
+            trendLine(wk.a.pwr, wk.b.pwr, wk.a.pwr ? Math.round(wk.a.pwr) + 'w' : '—')) +
         kpi(Math.round(all.cal).toLocaleString(), '', 'calories burned',
             trendLine(wk.a.cal, wk.b.cal, Math.round(wk.a.cal).toLocaleString()));
     }
     box.innerHTML = html;
-  }
-
-  /* ============================================================
-     CHARTS
-     ============================================================ */
-  function chartDefaults() {
-    if (!window.Chart) return;
-    Chart.defaults.font.family = "'Space Mono', ui-monospace, monospace";
-    Chart.defaults.font.size = 10;
-    Chart.defaults.color = COL.ink3;
-  }
-  function destroyCharts() {
-    charts.forEach(function (c, i) { if (c) { c.destroy(); charts[i] = null; } });
-  }
-  function setCard(i, head, sub) {
-    document.getElementById('c' + i + '-h').textContent = head;
-    document.getElementById('c' + i + '-s').textContent = sub || '';
-  }
-  function ctx(i) { return document.getElementById('chart' + i).getContext('2d'); }
-
-  var baseScales = function (xTitle, yTitle) {
-    return {
-      x: { title: { display: !!xTitle, text: xTitle, color: COL.ink3 },
-           grid: { color: COL.grid }, ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 7 } },
-      y: { title: { display: !!yTitle, text: yTitle, color: COL.ink3 },
-           grid: { color: COL.grid }, beginAtZero: false }
-    };
-  };
-  var noLegend = { legend: { display: false } };
-
-  function lineCfg(labels, datasets, scales, plugins) {
-    return {
-      type: 'line',
-      data: { labels: labels, datasets: datasets },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: Object.assign({ legend: { display: datasets.length > 1, labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true } },
-                                  tooltip: { backgroundColor: COL.ink, padding: 10, cornerRadius: 8, titleFont: { size: 10 }, bodyFont: { size: 11 } } }, plugins || {}),
-        scales: scales
-      }
-    };
-  }
-
-  /* ---- aggregate charts (no selection) ---- */
-  function renderAggregateCharts() {
-    var list = filtered().slice().sort(function (a, b) { return (a.start || '').localeCompare(b.start || ''); });
-
-    /* 1 — Monthly volume (stacked run/ride distance) */
-    var months = {}, order = [];
-    list.forEach(function (a) {
-      var key = (a.date || '').slice(0, 7);
-      if (!key) return;
-      if (!months[key]) { months[key] = { run: 0, ride: 0 }; order.push(key); }
-      months[key][a.category] += km(a.distance_m);
-    });
-    var mLabels = order.map(function (k) {
-      var p = k.split('-'); var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      return mo[parseInt(p[1], 10) - 1] + ' ’' + p[0].slice(2);
-    });
-    var dsMonth = [];
-    if (filter !== 'ride') dsMonth.push({ label: 'Run', data: order.map(function (k) { return Math.round(months[k].run); }), backgroundColor: COL.run, borderRadius: 3, stack: 's' });
-    if (filter !== 'run') dsMonth.push({ label: 'Ride', data: order.map(function (k) { return Math.round(months[k].ride); }), backgroundColor: COL.ride, borderRadius: 3, stack: 's' });
-    setCard(1, 'Monthly volume', 'distance per month · km');
-    charts[0] = new Chart(ctx(1), {
-      type: 'bar',
-      data: { labels: mLabels, datasets: dsMonth },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: dsMonth.length > 1, labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true } },
-                   tooltip: { backgroundColor: COL.ink, padding: 10, cornerRadius: 8 } },
-        scales: { x: { stacked: true, grid: { display: false }, ticks: { autoSkip: true, maxTicksLimit: 8, maxRotation: 0 } },
-                  y: { stacked: true, grid: { color: COL.grid }, beginAtZero: true } }
-      }
-    });
-
-    /* 2 — Cumulative distance over time */
-    var cum = 0;
-    var cumPts = list.map(function (a) { cum += km(a.distance_m); return { x: a.date, y: Math.round(cum) }; });
-    setCard(2, 'Cumulative distance', 'kilometres logged over time');
-    charts[1] = new Chart(ctx(2), lineCfg(
-      cumPts.map(function (p) { return p.x; }),
-      [{ label: 'Total km', data: cumPts.map(function (p) { return p.y; }),
-         borderColor: COL.accentDeep, backgroundColor: 'rgba(116,192,67,0.16)', fill: true,
-         pointRadius: 0, borderWidth: 2, tension: 0.25 }],
-      { x: { grid: { display: false }, ticks: { autoSkip: true, maxTicksLimit: 6, maxRotation: 0,
-              callback: function (v) { var d = this.getLabelForValue(v); return d ? d.slice(0, 7) : ''; } } },
-        y: { grid: { color: COL.grid }, beginAtZero: true } },
-      noLegend
-    ));
-
-    /* 3 — Distance per activity (scatter, colored by type) */
-    var pts = list.map(function (a, i) { return { x: i, y: +km(a.distance_m).toFixed(1), c: a.category, d: a.date }; });
-    setCard(3, 'Distance per activity', 'each session, oldest → newest · km');
-    charts[2] = new Chart(ctx(3), {
-      type: 'scatter',
-      data: { datasets: [{
-        data: pts,
-        parsing: false,
-        pointBackgroundColor: pts.map(function (p) { return p.c === 'run' ? COL.run : COL.ride; }),
-        pointBorderWidth: 0, pointRadius: 3, pointHoverRadius: 5
-      }] },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false },
-          tooltip: { backgroundColor: COL.ink, padding: 10, cornerRadius: 8,
-            callbacks: { title: function (it) { return it[0].raw.d; }, label: function (it) { return it.raw.y + ' km'; } } } },
-        scales: { x: { display: false }, y: { grid: { color: COL.grid }, beginAtZero: true } }
-      }
-    });
-
-    /* 4 — Avg heart rate trend */
-    var hrPts = list.filter(function (a) { return a.avg_hr; })
-      .map(function (a) { return { x: a.date, y: Math.round(a.avg_hr), c: a.category }; });
-    setCard(4, 'Heart-rate trend', 'average bpm per activity');
-    charts[3] = new Chart(ctx(4), {
-      type: 'scatter',
-      data: { datasets: [{
-        data: hrPts.map(function (p, i) { return { x: i, y: p.y, d: p.x }; }),
-        parsing: false,
-        pointBackgroundColor: hrPts.map(function (p) { return p.c === 'run' ? COL.run : COL.ride; }),
-        pointBorderWidth: 0, pointRadius: 3, pointHoverRadius: 5,
-        showLine: false
-      }] },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false },
-          tooltip: { backgroundColor: COL.ink, padding: 10, cornerRadius: 8,
-            callbacks: { title: function (it) { return it[0].raw.d; }, label: function (it) { return it.raw.y + ' bpm'; } } } },
-        scales: { x: { display: false }, y: { grid: { color: COL.grid }, beginAtZero: false } }
-      }
-    });
-  }
-
-  /* ---- per-activity charts (selection) ---- */
-  function renderActivityCharts(a) {
-    var s = a.series;
-    if (!s || !s.dist_km) {           // no stream data — show a friendly empty state
-      [1, 2, 3, 4].forEach(function (i) { setCard(i, '—', 'no stream data for this activity'); });
-      return;
-    }
-    var labels = s.dist_km;
-    var xTicks = { autoSkip: true, maxTicksLimit: 6, maxRotation: 0,
-                   callback: function (v) { var d = labels[v]; return d != null ? d.toFixed(1) : ''; } };
-
-    /* 1 — Elevation profile */
-    if (s.elev_m) {
-      setCard(1, 'Elevation profile', 'metres over distance (km)');
-      charts[0] = new Chart(ctx(1), lineCfg(labels,
-        [{ data: s.elev_m, borderColor: COL.ink2, backgroundColor: 'rgba(21,21,15,0.08)', fill: true, pointRadius: 0, borderWidth: 1.5, tension: 0.2 }],
-        { x: { grid: { display: false }, ticks: xTicks }, y: { grid: { color: COL.grid } } }, noLegend));
-    } else { setCard(1, 'Elevation profile', 'no elevation data'); }
-
-    /* 2 — Heart rate */
-    if (s.hr) {
-      setCard(2, 'Heart rate', 'bpm over distance (km)');
-      charts[1] = new Chart(ctx(2), lineCfg(labels,
-        [{ data: s.hr, borderColor: '#c0392b', backgroundColor: 'rgba(192,57,43,0.10)', fill: true, pointRadius: 0, borderWidth: 1.5, tension: 0.2 }],
-        { x: { grid: { display: false }, ticks: xTicks }, y: { grid: { color: COL.grid } } }, noLegend));
-    } else { setCard(2, 'Heart rate', 'no heart-rate data'); }
-
-    /* 3 — Pace (run) or Speed (ride) */
-    if (s.speed_ms) {
-      var col = a.category === 'run' ? COL.run : COL.ride;
-      if (a.category === 'run') {
-        // convert m/s -> pace sec/km, clamp absurd values (stops/standing)
-        var pace = s.speed_ms.map(function (v) { return v && v > 0.3 ? Math.min(900, 1000 / v) : null; });
-        setCard(3, 'Pace', 'min/km over distance — lower is faster');
-        charts[2] = new Chart(ctx(3), lineCfg(labels,
-          [{ data: pace, borderColor: col, backgroundColor: 'rgba(76,138,39,0.10)', fill: true, pointRadius: 0, borderWidth: 1.5, tension: 0.2, spanGaps: true }],
-          { x: { grid: { display: false }, ticks: xTicks },
-            y: { reverse: true, grid: { color: COL.grid },
-                 ticks: { callback: function (v) { return fmtPace(v); } } } },
-          { tooltip: { backgroundColor: COL.ink, padding: 10, cornerRadius: 8,
-            callbacks: { label: function (it) { return fmtPace(it.parsed.y) + ' /km'; } } } }));
-      } else {
-        var kmh = s.speed_ms.map(function (v) { return v != null ? +(v * 3.6).toFixed(1) : null; });
-        setCard(3, 'Speed', 'km/h over distance');
-        charts[2] = new Chart(ctx(3), lineCfg(labels,
-          [{ data: kmh, borderColor: col, backgroundColor: 'rgba(217,138,43,0.12)', fill: true, pointRadius: 0, borderWidth: 1.5, tension: 0.2, spanGaps: true }],
-          { x: { grid: { display: false }, ticks: xTicks }, y: { grid: { color: COL.grid }, beginAtZero: true } }, noLegend));
-      }
-    } else { setCard(3, a.category === 'run' ? 'Pace' : 'Speed', 'no velocity data'); }
-
-    /* 4 — Power (if any) else a distance/elev recap message */
-    if (s.watts) {
-      setCard(4, 'Power', 'watts over distance (km)');
-      charts[3] = new Chart(ctx(4), lineCfg(labels,
-        [{ data: s.watts, borderColor: '#7b5ea7', backgroundColor: 'rgba(123,94,167,0.12)', fill: true, pointRadius: 0, borderWidth: 1.5, tension: 0.2, spanGaps: true }],
-        { x: { grid: { display: false }, ticks: xTicks }, y: { grid: { color: COL.grid }, beginAtZero: true } }, noLegend));
-    } else {
-      setCard(4, 'Power', 'no power data for this activity');
-    }
-  }
-
-  function renderCharts() {
-    destroyCharts();
-    if (selectedId) renderActivityCharts(byId(selectedId));
-    else renderAggregateCharts();
   }
 
   /* ============================================================
@@ -639,7 +450,6 @@
     }
 
     renderKpis();
-    renderCharts();
     // table: just toggle row highlight + scroll into view (avoid a full re-render flicker)
     document.querySelectorAll('#acts-body tr').forEach(function (tr) {
       var on = tr.getAttribute('data-id') === selectedId;
@@ -668,7 +478,6 @@
     refreshMapData();
     renderTable();
     renderKpis();
-    renderCharts();
     if (selectedId) {
       selectActivity(selectedId, { fromMap: true, fromTable: true });
     } else {
@@ -757,13 +566,11 @@
     document.getElementById('gen-line').textContent =
       ALL.length + ' activities · ' + withRoute + ' mapped routes · last synced ' + gen;
 
-    chartDefaults();
     setCounts();
     populateLocations();
     updateSortHeader();
     renderKpis();
     renderTable();
-    renderCharts();
     if (window.maplibregl) initMap();
     else document.getElementById('map').innerHTML = '<div class="map-empty">Map library failed to load.</div>';
     wire();

@@ -12,8 +12,6 @@
 <!-- MapLibre GL (renders MapTiler vector styles) -->
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -38,6 +36,7 @@
         <a href="project-centerpoint.html" class="nav__sub">CenterPoint Energy</a>
         <a href="project-att-fraud.html" class="nav__sub">AT&amp;T Fraud Detection</a>
         <a href="index.html#misc" class="nav__sub">Misc. Projects</a>
+        <a href="index.html#experiments" class="nav__sub">Experiments</a>
       </div>
       <a href="index.html#connect" class="nav__item">_connect</a>
     </nav>
@@ -75,6 +74,11 @@
       </div>
     </div>
 
+    <!-- KPI strip -->
+    <div class="map-kpis-wrap">
+      <div class="map-kpis proj-kpis" id="map-kpis"></div>
+    </div>
+
     <!-- map -->
     <div class="map-wrap">
       <div id="map"></div>
@@ -83,21 +87,6 @@
         <div class="row"><span class="sw" style="background:var(--run)"></span>Running</div>
         <div class="row"><span class="sw" style="background:var(--ride)"></span>Cycling</div>
         <div class="row"><span class="sw" style="background:var(--ink)"></span>Selected</div>
-      </div>
-    </div>
-
-    <!-- KPI strip -->
-    <div class="map-kpis-wrap">
-      <div class="map-kpis proj-kpis" id="map-kpis"></div>
-    </div>
-
-    <!-- charts -->
-    <div class="map-charts-wrap">
-      <div class="map-charts">
-        <div class="chartcard"><div class="chartcard__h" id="c1-h">—</div><div class="chartcard__sub" id="c1-s"></div><div class="chartcard__canvas"><canvas id="chart1"></canvas></div></div>
-        <div class="chartcard"><div class="chartcard__h" id="c2-h">—</div><div class="chartcard__sub" id="c2-s"></div><div class="chartcard__canvas"><canvas id="chart2"></canvas></div></div>
-        <div class="chartcard"><div class="chartcard__h" id="c3-h">—</div><div class="chartcard__sub" id="c3-s"></div><div class="chartcard__canvas"><canvas id="chart3"></canvas></div></div>
-        <div class="chartcard"><div class="chartcard__h" id="c4-h">—</div><div class="chartcard__sub" id="c4-s"></div><div class="chartcard__canvas"><canvas id="chart4"></canvas></div></div>
       </div>
     </div>
 

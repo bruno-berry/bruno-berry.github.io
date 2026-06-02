@@ -197,6 +197,7 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 .tile:focus-visible{ outline:2px solid var(--accent-deep); outline-offset:2px; }
 .tile--feature{ grid-column:span 2; grid-row:span 2; }
 .tile--half{ grid-column:span 2; grid-row:span 1; }
+.tile--wide{ grid-column:1 / -1; grid-row:span 2; }
 .tile__top{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
 .tile__co{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); }
 .tile__plus{ width:30px; height:30px; border-radius:50%; border:1px solid var(--line-2); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .35s var(--ease), border-color .35s, transform .45s var(--ease); }
@@ -455,11 +456,13 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 .rp__stats span::before{ content:'·'; position:absolute; left:0; color:var(--ink-4); }
 .rp__date{ font-family:var(--mono); font-size:10px; color:var(--ink-3); margin-top:6px; }
 
-/* KPI strip — reuse .proj-kpis / .kpi look but 6-up */
-.map-kpis-wrap{ max-width:none; padding:clamp(22px,3vw,34px) clamp(28px,5vw,72px) 0; }
-.map-kpis{ display:grid; grid-template-columns:repeat(6,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+/* KPI strip — reuse .proj-kpis / .kpi look. Sits between the filters and the map. */
+.map-kpis-wrap{ max-width:none; padding:0 clamp(28px,5vw,72px) clamp(18px,2.5vw,26px); }
+/* auto-flow column keeps every KPI on a single row, sharing width equally, no
+   matter how many there are (6 when an activity is selected, 7 aggregate). */
+.map-kpis{ display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
 .map-kpis .kpi__n{ font-size:clamp(20px,2.4vw,30px); }
-.map-kpis .kpi{ padding:20px 20px; }
+.map-kpis .kpi{ padding:20px clamp(12px,1.4vw,20px); }
 /* week-over-week sub-KPI */
 .kpi__trend{ display:flex; align-items:center; gap:5px; font-family:var(--mono); font-size:10px; letter-spacing:0.02em; margin-top:10px; color:var(--ink-3); }
 .kpi__trend .ar{ font-size:9px; line-height:1; }
@@ -468,18 +471,8 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 .kpi__trend.dir-down{ color:#c0392b; }
 .kpi__trend.dir-flat{ color:var(--ink-4); }
 .kpi__trend.dir-up .wk, .kpi__trend.dir-down .wk{ color:var(--ink-4); }
-@media (max-width:980px){ .map-kpis{ grid-template-columns:repeat(3,1fr); } }
-@media (max-width:560px){ .map-kpis{ grid-template-columns:repeat(2,1fr); } }
-
-/* charts */
-.map-charts-wrap{ max-width:none; padding:clamp(22px,3vw,34px) clamp(28px,5vw,72px) 0; }
-.map-charts{ display:grid; grid-template-columns:repeat(2,1fr); gap:13px; }
-.chartcard{ border:1px solid var(--line); border-radius:13px; background:var(--surface); padding:20px 20px 16px; min-width:0; }
-.chartcard__h{ font-family:var(--mono); font-size:11px; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink); margin-bottom:4px; }
-.chartcard__h::before{ content:'_'; color:var(--accent-deep); }
-.chartcard__sub{ font-family:var(--mono); font-size:10px; color:var(--ink-4); margin-bottom:14px; }
-.chartcard__canvas{ position:relative; height:200px; }
-@media (max-width:860px){ .map-charts{ grid-template-columns:1fr; } }
+@media (max-width:980px){ .map-kpis{ grid-auto-flow:row; grid-template-columns:repeat(3,1fr); } }
+@media (max-width:560px){ .map-kpis{ grid-auto-flow:row; grid-template-columns:repeat(2,1fr); } }
 
 /* table */
 .map-table-wrap{ max-width:none; padding:clamp(30px,4vw,48px) clamp(28px,5vw,72px) 0; }
