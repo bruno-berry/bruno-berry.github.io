@@ -1,42 +1,263 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-	<meta name="generator" content="Hugo 0.92.2" />
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/css/style.css">
-
-  <title>bruno b berry</title>
-  <link rel="icon" href="favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bruno B. Berry — Sr. Experience Designer</title>
+<meta name="description" content="Bruno B. Berry — Senior Experience Designer at Credera. Data visualization, enterprise systems, and agentic AI. Brooklyn, NY." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="styles.css" />
 </head>
+<body>
 
+<!-- ░░ MOBILE TOPBAR ░░ -->
+<div class="topbar">
+  <a href="#intro" class="brand"><span class="brand__dot"></span><span class="brand__name">Bruno B. Berry</span></a>
+  <button class="burger" id="burger" aria-label="Toggle menu" aria-controls="rail"><span></span><span></span><span></span></button>
+</div>
+<div class="scrim" id="scrim"></div>
 
-<body><div class="topnav centered">
-  <a class="topnav-home" href="/">main</a>
-  <a class="topnav-right topnav-rightmost" href="/me/">me</a>
-  <a class="topnav-right" href="/other/">other</a>
-  <a class="topnav-right" href="/writing/">writing</a>
+<div class="shell">
+
+  <!-- ░░ SIDEBAR ░░ -->
+  <aside class="rail" id="rail">
+    <a href="#intro" class="brand"><span class="brand__dot"></span><span class="brand__name">Bruno B. Berry</span></a>
+    <p class="rail__role">Sr. Experience Designer</p>
+
+    <nav class="nav" aria-label="Primary">
+      <a href="#intro" class="nav__item active" data-for="intro">_intro</a>
+
+      <a href="#projects" class="nav__item" data-for="projects">_projects</a>
+      <div class="nav__group">
+        <a href="project-att-agentic.html" class="nav__sub">AT&amp;T Agentic Marketing</a>
+        <a href="project-centerpoint.html" class="nav__sub">CenterPoint Energy</a>
+        <a href="project-att-fraud.html" class="nav__sub">AT&amp;T Fraud Detection</a>
+        <a href="#misc" class="nav__sub">Misc. Projects</a>
+      </div>
+
+      <a href="#connect" class="nav__item" data-for="connect">_connect</a>
+    </nav>
+
+    <div class="rail__foot">
+      <span class="rail__copy">© <span data-year>2026</span> Bruno B. Berry</span>
+    </div>
+  </aside>
+
+  <!-- ░░ MAIN ░░ -->
+  <main class="main">
+
+    <!-- INTRO -->
+    <section class="section" id="intro" data-spy="intro">
+      <span class="sectlabel">intro</span>
+      <h1 class="display intro__name">
+        <span class="l"><span>Bruno B.</span></span>
+        <span class="l"><span>Berry</span></span>
+      </h1>
+      <p class="intro__title"><span class="g">_</span>Senior Experience Designer · Credera · Brooklyn, NY</p>
+      <p class="intro__tag">I design clarity into <em>large, complex, ambiguous</em> systems — from data analytics to enterprise tools to agentic AI.</p>
+      <div class="intro__links">
+        <a href="https://www.brunobberry.com/_files/ugd/267d0a_1d6c9423dd8c49dd9fa6eb4e55fbe112.pdf" target="_blank" rel="noopener" class="btn btn--solid">Résumé
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/brunoberry/" target="_blank" rel="noopener" class="btn">LinkedIn
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="section" id="projects" data-spy="projects">
+      <span class="sectlabel">projects</span>
+
+      <div class="keylist">
+        <!-- AT&T AGENTIC -->
+        <article class="keyproj">
+          <a class="keyproj__link" href="project-att-agentic.html" aria-label="Open AT&amp;T Agentic Marketing"></a>
+          <div class="keyproj__body">
+            <div class="keyproj__meta"><span>AT&amp;T · Credera</span><span>2026</span></div>
+            <h2 class="keyproj__title">Agentic Marketing<br/>Intelligence</h2>
+            <p class="keyproj__desc">A fully agentic workflow taking data insights to complete campaign briefs in minutes — built end-to-end with Claude Code on AT&amp;T's design system.</p>
+            <div class="keyproj__tags"><span class="tag">Agentic AI</span><span class="tag">Workflow</span><span class="tag">Claude Code</span></div>
+            <span class="keyproj__go">View project <span class="line"></span>↗</span>
+          </div>
+          <div class="keyproj__media"><img src="https://static.wixstatic.com/media/267d0a_8508a8721a6e4fa7808d018369f7ba5af002.jpg" alt="AT&amp;T Agentic Marketing" loading="lazy" /></div>
+        </article>
+
+        <!-- CENTERPOINT -->
+        <article class="keyproj">
+          <a class="keyproj__link" href="project-centerpoint.html" aria-label="Open CenterPoint Energy"></a>
+          <div class="keyproj__body">
+            <div class="keyproj__meta"><span>CenterPoint Energy · Credera</span><span>2025–26</span></div>
+            <h2 class="keyproj__title">Emergency+<br/>Dispatch Platform</h2>
+            <p class="keyproj__desc">20+ minutes to under 2. Seven tools consolidated into one. Auto-dispatch now handles 80% of emergency work orders.</p>
+            <div class="keyproj__tags"><span class="tag">Enterprise SaaS</span><span class="tag">Operations</span><span class="tag">Design System</span></div>
+            <span class="keyproj__go">View project <span class="line"></span>↗</span>
+          </div>
+          <div class="keyproj__media"><img src="https://static.wixstatic.com/media/267d0a_4cdf613b37764bbf8d0f0bc6fcac5763~mv2.png" alt="CenterPoint Energy Emergency+" loading="lazy" /></div>
+        </article>
+
+        <!-- AT&T FRAUD -->
+        <article class="keyproj">
+          <a class="keyproj__link" href="project-att-fraud.html" aria-label="Open AT&amp;T Fraud Detection"></a>
+          <div class="keyproj__body">
+            <div class="keyproj__meta"><span>AT&amp;T · Credera</span><span>2024</span></div>
+            <h2 class="keyproj__title">Fraud Detection<br/>&amp; Investigation</h2>
+            <p class="keyproj__desc">A complete overhaul of AT&amp;T's internal hardware-fraud tooling, with a workflow editor built to adapt as threats evolve.</p>
+            <div class="keyproj__tags"><span class="tag">Analytics</span><span class="tag">Internal Tools</span><span class="tag">Workflow Editor</span></div>
+            <span class="keyproj__go">View project <span class="line"></span>↗</span>
+          </div>
+          <div class="keyproj__media"><img src="https://static.wixstatic.com/media/267d0a_01fe3a37d38d41088d74d6b8056dd1cc~mv2.png" alt="AT&amp;T Fraud Detection" loading="lazy" /></div>
+        </article>
+      </div>
+
+      <!-- stats -->
+      <div class="stats">
+        <div class="stat"><div class="stat__n">83<span class="s">%</span></div><div class="stat__l">faster emergency response</div></div>
+        <div class="stat"><div class="stat__n">5k<span class="s">+</span></div><div class="stat__l">employees upskilled</div></div>
+        <div class="stat"><div class="stat__n">$5<span class="s">M+</span></div><div class="stat__l">opportunities driven</div></div>
+      </div>
+
+      <!-- MISC / BENTO -->
+      <div class="subhead" id="misc">
+        <h3>Misc. Projects</h3>
+        <span class="hint">tap any tile</span>
+      </div>
+      <div class="bento">
+        <button class="tile tile--feature" data-modal="masters" aria-haspopup="dialog">
+          <div class="tile__top"><span class="tile__co">Georgia Tech · M.S. Thesis</span><span class="tile__plus"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></div>
+          <div>
+            <div class="tile__title">Data Physicalization</div>
+            <p class="tile__desc">My master's thesis: turning abstract data into physical form as a tool in the design process.</p>
+          </div>
+          <svg class="tile__art" viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M50 14 84 33v34L50 86 16 67V33Z"/><path d="M50 14v36l34 17M50 50 16 67"/></svg>
+        </button>
+
+        <button class="tile tile--feature" data-modal="datascapes" aria-haspopup="dialog">
+          <div class="tile__top"><span class="tile__co">Experimental Media · w/ C. Johnson</span><span class="tile__plus"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></div>
+          <div>
+            <div class="tile__title">Datascapes</div>
+            <p class="tile__desc">A critical-design project on surveillance and the data "smart cities" quietly collect about us.</p>
+          </div>
+          <svg class="tile__art" viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="1.5"><rect x="14" y="14" width="72" height="72" rx="4"/><path d="M14 38h72M14 62h72M38 14v72M62 14v72"/><circle cx="50" cy="50" r="6" fill="var(--accent)" stroke="none"/></svg>
+        </button>
+
+        <button class="tile tile--half" data-modal="mercedes" aria-haspopup="dialog">
+          <div class="tile__top"><span class="tile__co">Mercedes-Benz · Credera</span><span class="tile__plus"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></div>
+          <div class="tile__title">Financing &amp; Payment Portal</div>
+          <svg class="tile__art" viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="50" cy="50" r="44"/><path d="M50 6v44l31 19M50 50 19 69"/></svg>
+        </button>
+
+        <button class="tile tile--half" data-modal="gatech" aria-haspopup="dialog">
+          <div class="tile__top"><span class="tile__co">Georgia Tech · EML</span><span class="tile__plus"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></div>
+          <div class="tile__title">Interactive Museum Exhibit</div>
+          <svg class="tile__art" viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M50 10 61 39 92 39 67 58 76 88 50 70 24 88 33 58 8 39 39 39Z"/></svg>
+        </button>
+
+        <button class="tile tile--half" data-modal="southwest" aria-haspopup="dialog">
+          <div class="tile__top"><span class="tile__co">Southwest Airlines · Credera</span><span class="tile__plus"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></div>
+          <div class="tile__title">Reimbursement Redesign</div>
+          <svg class="tile__art" viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M10 60 90 18l-22 70-16-26-32-2Z"/></svg>
+        </button>
+
+        <button class="tile tile--half" data-modal="analytics" aria-haspopup="dialog">
+          <div class="tile__top"><span class="tile__co">Chick-fil-A · Starbucks · FIS</span><span class="tile__plus"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></div>
+          <div class="tile__title">Analytics Education</div>
+          <svg class="tile__art" viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 70h12l14 18 14-58 12 30h12"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- CONNECT -->
+    <section class="section connect" id="connect" data-spy="connect">
+      <span class="sectlabel">connect</span>
+      <h2 class="connect__big"><a href="mailto:bruno.b.berry@gmail.com">Let's connect <span class="arrow">↗</span></a></h2>
+      <div class="connect__row">
+        <a href="mailto:bruno.b.berry@gmail.com">bruno.b.berry@gmail.com</a>
+        <a href="https://www.linkedin.com/in/brunoberry/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href="https://www.brunobberry.com/_files/ugd/267d0a_1d6c9423dd8c49dd9fa6eb4e55fbe112.pdf" target="_blank" rel="noopener">Résumé ↗</a>
+        <span>Brooklyn, NY</span>
+      </div>
+    </section>
+
+  </main>
 </div>
 
+<!-- ░░ MODAL ░░ -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title" aria-hidden="true">
+  <div class="modal__back"></div>
+  <div class="modal__card">
+    <button class="modal__close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 6 18 18M18 6 6 18"/></svg></button>
+    <div class="modal__co" id="m-co"></div>
+    <h2 class="modal__title" id="m-title"></h2>
+    <div class="modal__meta" id="m-meta"></div>
+    <img id="m-img" class="modal__img" alt="" style="display:none" />
+    <div id="m-body"></div>
+  </div>
+</div>
 
-<div id="content" class="centered">
-  <p><br> <br> <br>
-Welcome to my site.</p>
-<p>There is writing about design and some <i>stray</i> thoughts.</p>
-<p>Photos of my <b>dog</b> are also present.</p>
-<p>I enjoy making espresso, being a foreigner somewhere, and uncovering solutions to tricky puzzles.</p>
-<p>Currently residing in <a href="https://en.wikipedia.org/wiki/Brooklyn" target="_blank" rel="noopener noreferrer"><u>Brooklyn, NY.</u></a></p>
-
-<figure class="wide" style="margin-top: 0">
-    <img src="/img/photo_003.jpg"></img>
-    <figcaption>
-	  <b>national library - mexico city</b> 
-	  <br>
-      <p>2023</p> 
-    </figcaption> 
-  </figure>
-
-        </div></body>
+<script>
+/* Misc-project content (rendered into the modal) */
+window.MISC = {
+  masters: {
+    co: 'Georgia Tech \u00b7 M.S. Industrial Design',
+    title: 'Data Physicalization in the Design Process',
+    meta: ['Role  Researcher &amp; Designer', 'Year  2018\u201319', 'Type  Master\u2019s Thesis'],
+    img: 'assets/proj/masters-01.jpg',
+    body:
+      '<div class="modal__h">about</div><p class="modal__p">My master\u2019s thesis investigated <em>data physicalization</em> \u2014 the process of converting abstract data, quantitative or qualitative, into physical form \u2014 and whether designers can confidently use those physical artifacts to draw design insights. It grew out of an interest in design intuition, abductive reasoning, and feminist standpoint theory\u2019s critique of pure objectivity.</p>' +
+      '<div class="modal__h">approach</div><p class="modal__p">I grounded the work in expert interviews (a lead product designer and the director of an art-and-data program) and a survey mapping how designers define and use data. I then designed sets of physical artifacts \u2014 cubes varying in size, material, and texture \u2014 to represent and rank design values, and ran an A/B study comparing data <em>visualization</em> against data <em>physicalization</em> for drawing insights.</p>' +
+      '<div class="modal__h">findings</div><p class="modal__p">Across Friedman, Wilcoxon signed-ranks, and unequal-variance t-tests, physicalization performed on par with visualization \u2014 no statistically significant difference \u2014 while 90% of participants wanted to see it developed further. The conclusion: data physicality deserves continued exploration as a design tool, with future work on a shared taxonomy and digital\u2013physical coupling.</p>'
+  },
+  datascapes: {
+    co: 'Experimental Media \u00b7 with Catherine R. Johnson',
+    title: 'Datascapes',
+    meta: ['Role  Co-designer', 'Year  2018', 'Type  Critical / Speculative Design'],
+    img: 'assets/proj/datascapes-01.jpg',
+    body:
+      '<div class="modal__h">about</div><p class="modal__p">Datascapes is a critical-design project examining surveillance and data collection in the era of the \u201csmart city.\u201d It asks a simple question with uncomfortable answers: what data is quietly recorded about us as we move through public space, where do those sensors live, and who gets access?</p>' +
+      '<div class="modal__h">approach</div><p class="modal__p">We researched real deployments \u2014 Rio de Janeiro\u2019s Centro de Opera\u00e7\u00f5es and AT&amp;T\u2019s sensor-equipped street lights \u2014 then prototyped a <em>wearable thermal printer</em> (Arduino, thermal printer, battery, and a 3D-printed pocket-clip case) that prints a receipt of the data a city collects about you as you travel.</p>' +
+      '<div class="modal__h">the interaction</div><p class="modal__p">A final video interface lets people choose between a shorter \u201chigh-data\u201d route and a longer \u201clow-data\u201d route, surfacing the privacy-versus-convenience trade-off. Time-stamped surveillance footage, an animated map, and a printed receipt make invisible data collection tangible \u2014 and personal.</p>'
+  },
+  mercedes: {
+    co: 'Mercedes-Benz \u00b7 Credera',
+    title: 'Digital Financing &amp; Payment Portal',
+    meta: ['Role  UX Designer', 'Year  2023', 'Type  Consumer Fintech'],
+    body:
+      '<div class="modal__h">about</div><p class="modal__p">A customer-facing financing and payment portal for Mercedes-Benz spanning Canada, the USA, and Mexico \u2014 each with distinct legal frameworks, currencies, and languages, unified into one premium experience.</p>' +
+      '<div class="modal__h">approach</div><p class="modal__p">Designed within each market\u2019s regulatory requirements while holding a single coherent interaction model. Accessibility was a first-class constraint, not an afterthought.</p>' +
+      '<div class="modal__h">details</div><p class="modal__p">10,000+ end users \u00b7 3 countries \u00b7 full WCAG compliance \u00b7 maintained the Mercedes-Benz premium brand standard throughout.</p>'
+  },
+  southwest: {
+    co: 'Southwest Airlines \u00b7 Credera',
+    title: 'Customer Reimbursement Redesign',
+    meta: ['Role  UX Designer', 'Year  2023', 'Type  Legacy Modernization'],
+    body:
+      '<div class="modal__h">about</div><p class="modal__p">A modernization of Southwest\u2019s 30-year-old internal reimbursement software, improving both the customer experience and the agent workflows built on top of it.</p>' +
+      '<div class="modal__h">approach</div><p class="modal__p">Refreshed the visual system and streamlined the core flows around how agents and customers actually move through reimbursement, replacing decades of accumulated complexity.</p>' +
+      '<div class="modal__h">details</div><p class="modal__p">65% improvement in reimbursement efficiency \u00b7 a modern design system over a 30-year legacy foundation.</p>'
+  },
+  analytics: {
+    co: 'Chick-fil-A \u00b7 Starbucks \u00b7 FIS \u00b7 Axis Group',
+    title: 'Enterprise Analytics Education',
+    meta: ['Role  Senior UX Designer', 'Year  2020\u201323', 'Type  Service Design'],
+    body:
+      '<div class="modal__h">about</div><p class="modal__p">At Chick-fil-A, Starbucks, and FIS, the bottleneck wasn\u2019t tooling \u2014 it was literacy. Employees from junior analysts to executives needed to understand and act on analytics.</p>' +
+      '<div class="modal__h">approach</div><p class="modal__p">Using qualitative and quantitative research, personas, and journey maps, I built repeatable curricula and design frameworks that scaled across thousands of users.</p>' +
+      '<div class="modal__h">details</div><p class="modal__p">5,000+ employees upskilled \u00b7 $5M+ in analytics opportunities driven \u00b7 frameworks cut analytics time from 5+ days to under 30 minutes.</p>'
+  },
+  gatech: {
+    co: 'Georgia Tech \u00b7 Expressive Machinery Lab',
+    title: 'Interactive Museum Exhibit',
+    meta: ['Role  Industrial Designer', 'Year  2018\u201319', 'Type  Physical / Interactive'],
+    img: 'assets/proj/gatech-09.jpg',
+    body:
+      '<div class="modal__h">about</div><p class="modal__p">A hands-on tabletop exhibit built at Georgia Tech\u2019s Expressive Machinery Lab and shown at the Museum of Science &amp; Industry in Chicago. Visitors arrange illuminated, 3D-printed geometric modules around a central hub to explore audio-signal concepts \u2014 volume ramp, low-pass filter, chorus, reverse \u2014 with real-time light and sound feedback.</p>' +
+      '<div class="modal__h">approach</div><p class="modal__p">The piece bridges physical industrial design and interaction design: an aluminum-extrusion and pegboard chassis, an Arduino-driven sensing and lighting system, joystick and arcade controls, and a translucent surface that turns each module\u2019s state into color. It went through cardboard mock-ups, machined enclosures, and full electronics integration.</p>' +
+      '<div class="modal__h">details</div><p class="modal__p">Designed and fabricated end to end \u2014 enclosure, modules, and interaction logic \u2014 and exhibited live to museum visitors. The work grounded the systems-thinking that carries through to my enterprise UX practice today.</p>'
+  }
+};
+</script>
+<script src="script.js"></script>
+</body>
 </html>
