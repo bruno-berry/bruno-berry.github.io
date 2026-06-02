@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Movement — Bruno B. Berry</title>
+<meta name="description" content="An interactive map of Bruno B. Berry's running and cycling activities, with performance metrics and charts." />
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="styles.css" />
+<!-- MapLibre GL (renders MapTiler vector styles) -->
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ░░ MOBILE TOPBAR ░░ -->
+<div class="topbar">
+  <a href="index.html#intro" class="brand"><span class="brand__dot"></span><span class="brand__name">Bruno B. Berry</span></a>
+  <button class="burger" id="burger" aria-label="Toggle menu" aria-controls="rail"><span></span><span></span><span></span></button>
+</div>
+<div class="scrim" id="scrim"></div>
+
+<div class="shell">
+
+  <!-- ░░ SIDEBAR ░░ -->
+  <aside class="rail" id="rail">
+    <a href="index.html#intro" class="brand"><span class="brand__dot"></span><span class="brand__name">Bruno B. Berry</span></a>
+    <p class="rail__role">Sr. Experience Designer</p>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html#intro" class="nav__item">_intro</a>
+      <a href="index.html#projects" class="nav__item">_projects</a>
+      <div class="nav__group">
+        <a href="project-att-agentic.html" class="nav__sub">AT&amp;T Agentic Marketing</a>
+        <a href="project-centerpoint.html" class="nav__sub">CenterPoint Energy</a>
+        <a href="project-att-fraud.html" class="nav__sub">AT&amp;T Fraud Detection</a>
+        <a href="index.html#misc" class="nav__sub">Misc. Projects</a>
+      </div>
+      <a href="index.html#connect" class="nav__item">_connect</a>
+    </nav>
+    <div class="rail__foot">
+      <span class="rail__copy">&copy; <span data-year>2026</span> Bruno B. Berry</span>
+    </div>
+  </aside>
+
+  <!-- ░░ MAIN ░░ -->
+  <main class="main map-main">
+
+    <section class="map-head">
+      <span class="sectlabel">movement</span>
+      <h1>Where the miles go</h1>
+      <p class="map-head__sum">Every run and ride I've logged, pulled from intervals.icu. Explore the routes on the map or in the table — select any activity to drill into its metrics and profiles.</p>
+      <p class="map-head__gen" id="gen-line">Loading activities…</p>
+    </section>
+
+    <!-- toolbar -->
+    <div class="map-bar">
+      <div class="seg" role="group" aria-label="Filter by activity type">
+        <button class="seg__btn active" data-filter="all">All <span class="ct" data-ct="all"></span></button>
+        <button class="seg__btn" data-filter="run">Run <span class="ct" data-ct="run"></span></button>
+        <button class="seg__btn" data-filter="ride">Ride <span class="ct" data-ct="ride"></span></button>
+      </div>
+      <label class="locfilter">
+        <span class="locfilter__lbl">Location</span>
+        <select class="locfilter__sel" id="loc-filter" aria-label="Filter by location">
+          <option value="all">All locations</option>
+        </select>
+      </label>
+      <div class="map-sel" id="map-sel">
+        <span>Viewing <b id="sel-name"></b></span>
+        <button class="map-sel__x" id="sel-clear" aria-label="Clear selection">&times;</button>
+      </div>
+    </div>
+
+    <!-- map -->
+    <div class="map-wrap">
+      <div id="map"></div>
+      <button class="map-fit" id="map-fit">Reset view</button>
+      <div class="map-legend">
+        <div class="row"><span class="sw" style="background:var(--run)"></span>Running</div>
+        <div class="row"><span class="sw" style="background:var(--ride)"></span>Cycling</div>
+        <div class="row"><span class="sw" style="background:var(--ink)"></span>Selected</div>
+      </div>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="map-kpis-wrap">
+      <div class="map-kpis proj-kpis" id="map-kpis"></div>
+    </div>
+
+    <!-- charts -->
+    <div class="map-charts-wrap">
+      <div class="map-charts">
+        <div class="chartcard"><div class="chartcard__h" id="c1-h">—</div><div class="chartcard__sub" id="c1-s"></div><div class="chartcard__canvas"><canvas id="chart1"></canvas></div></div>
+        <div class="chartcard"><div class="chartcard__h" id="c2-h">—</div><div class="chartcard__sub" id="c2-s"></div><div class="chartcard__canvas"><canvas id="chart2"></canvas></div></div>
+        <div class="chartcard"><div class="chartcard__h" id="c3-h">—</div><div class="chartcard__sub" id="c3-s"></div><div class="chartcard__canvas"><canvas id="chart3"></canvas></div></div>
+        <div class="chartcard"><div class="chartcard__h" id="c4-h">—</div><div class="chartcard__sub" id="c4-s"></div><div class="chartcard__canvas"><canvas id="chart4"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- table -->
+    <div class="map-table-wrap">
+      <div class="map-table-head">
+        <h2>All activities</h2>
+        <span class="hint">click a row to select · click a header to sort</span>
+      </div>
+      <div class="tbl-scroll">
+        <table class="acts">
+          <thead>
+            <tr id="acts-head">
+              <th class="l" data-sort="date">Date <span class="ar">↓</span></th>
+              <th class="l" data-sort="type">Type <span class="ar">↓</span></th>
+              <th class="l" data-sort="name">Activity <span class="ar">↓</span></th>
+              <th class="l hide-sm" data-sort="location">Location <span class="ar">↓</span></th>
+              <th data-sort="distance_m">Dist <span class="ar">↓</span></th>
+              <th data-sort="moving_s">Time <span class="ar">↓</span></th>
+              <th data-sort="elev_gain_m" class="hide-sm">Elev <span class="ar">↓</span></th>
+              <th data-sort="pace" class="hide-sm">Pace / Spd <span class="ar">↓</span></th>
+              <th class="l hide-sm nosort">Tempo</th>
+              <th data-sort="avg_hr" class="hide-sm">Avg HR <span class="ar">↓</span></th>
+              <th data-sort="load" class="hide-sm">Load <span class="ar">↓</span></th>
+            </tr>
+          </thead>
+          <tbody id="acts-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="map-note" id="map-note">
+      Data fetched manually from intervals.icu via <code>fetch_data.py</code> and baked to a static file — the live site stays fully static. Map &copy; MapTiler &amp; OpenStreetMap contributors.
+    </p>
+
+  </main>
+</div>
+
+<script>
+  window.MAP_CONFIG = {
+    maptilerKey: 'hDiwDUe2ifjNNofNRaM3',
+    style: 'dataviz-light',
+    dataUrl: 'assets/data/activities.json'
+  };
+</script>
+<script src="script.js"></script>
+<script src="map.js"></script>
+</body>
+</html>
