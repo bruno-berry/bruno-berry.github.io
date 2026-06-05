@@ -99,9 +99,9 @@
   }
 
   function tick() {
-    cx += (mx - cx) * 0.18;
-    cy += (my - cy) * 0.18;
-    str += (strT - str) * 0.1;
+    cx += (mx - cx) * 0.45;
+    cy += (my - cy) * 0.45;
+    str += (strT - str) * 0.18;
     draw();
     /* settled → render one clean frame and idle until the next move */
     if (Math.abs(mx - cx) < 0.3 && Math.abs(my - cy) < 0.3 &&
