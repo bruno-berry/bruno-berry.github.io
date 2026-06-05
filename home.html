@@ -8,8 +8,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="styles.css" />
+<!-- MapLibre GL (renders the MapTiler vector style in the _about section) -->
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 </head>
 <body>
+
+<!-- dark-mode wash layer (spills up the page from the _about section) -->
+<div id="darkwash" aria-hidden="true"></div>
 
 <!-- ░░ MOBILE TOPBAR ░░ -->
 <div class="topbar">
@@ -37,6 +43,8 @@
       </div>
 
       <a href="#testimonials" class="nav__item" data-for="testimonials">_kudos</a>
+
+      <a href="#about" class="nav__item" data-for="about">_about</a>
 
       <a href="#connect" class="nav__item" data-for="connect">_connect</a>
     </nav>
@@ -178,6 +186,7 @@
           <svg class="tile__art" viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M50 10 61 39 92 39 67 58 76 88 50 70 24 88 33 58 8 39 39 39Z"/></svg>
         </button>
       </div>
+      <button class="show-more" type="button" data-more=".bento" data-more-item=".tile">Show more <span>+</span></button>
     </section>
 
     <!-- TESTIMONIALS -->
@@ -282,6 +291,84 @@
           </figcaption>
         </figure>
       </div>
+      <button class="show-more" type="button" data-more=".tms__grid" data-more-item=".tcard">Show more <span>+</span></button>
+    </section>
+
+    <!-- ABOUT (movement map — dark mode while in view) -->
+    <section class="section about" id="about" data-spy="about">
+      <span class="sectlabel">about</span>
+      <div class="map-head">
+        <h1>Where the miles go</h1>
+        <p class="map-head__sum">Beyond the work — every run and ride I've logged, pulled from intervals.icu. Explore the routes on the map or in the table — select any activity to drill into its metrics.</p>
+        <p class="map-head__gen" id="gen-line">Loading activities…</p>
+      </div>
+
+      <!-- toolbar -->
+      <div class="map-bar">
+        <div class="seg" role="group" aria-label="Filter by activity type">
+          <button class="seg__btn active" data-filter="all">All <span class="ct" data-ct="all"></span></button>
+          <button class="seg__btn" data-filter="run">Run <span class="ct" data-ct="run"></span></button>
+          <button class="seg__btn" data-filter="ride">Ride <span class="ct" data-ct="ride"></span></button>
+        </div>
+        <label class="locfilter">
+          <span class="locfilter__lbl">Location</span>
+          <select class="locfilter__sel" id="loc-filter" aria-label="Filter by location">
+            <option value="all">All locations</option>
+          </select>
+        </label>
+        <div class="map-sel" id="map-sel">
+          <span>Viewing <b id="sel-name"></b></span>
+          <button class="map-sel__x" id="sel-clear" aria-label="Clear selection">&times;</button>
+        </div>
+      </div>
+
+      <!-- KPI strip -->
+      <div class="map-kpis-wrap">
+        <div class="map-kpis proj-kpis" id="map-kpis"></div>
+      </div>
+
+      <!-- map -->
+      <div class="map-wrap">
+        <div id="map"></div>
+        <button class="map-fit" id="map-fit">Reset view</button>
+        <div class="map-legend">
+          <div class="row"><span class="sw" style="background:var(--run)"></span>Running</div>
+          <div class="row"><span class="sw" style="background:var(--ride)"></span>Cycling</div>
+          <div class="row"><span class="sw" style="background:var(--ink)"></span>Selected</div>
+        </div>
+      </div>
+
+      <!-- table -->
+      <div class="map-table-wrap">
+        <div class="map-table-head">
+          <h2>All activities</h2>
+          <span class="hint">click a row to select · click a header to sort</span>
+        </div>
+        <div class="tbl-scroll">
+          <table class="acts">
+            <thead>
+              <tr id="acts-head">
+                <th class="l" data-sort="date">Date <span class="ar">↓</span></th>
+                <th class="l" data-sort="type">Type <span class="ar">↓</span></th>
+                <th class="l" data-sort="name">Activity <span class="ar">↓</span></th>
+                <th class="l hide-sm" data-sort="location">Location <span class="ar">↓</span></th>
+                <th data-sort="distance_m">Dist <span class="ar">↓</span></th>
+                <th data-sort="moving_s">Time <span class="ar">↓</span></th>
+                <th data-sort="elev_gain_m" class="hide-sm">Elev <span class="ar">↓</span></th>
+                <th data-sort="pace" class="hide-sm">Pace / Spd <span class="ar">↓</span></th>
+                <th class="l hide-sm nosort">Tempo</th>
+                <th data-sort="avg_hr" class="hide-sm">Avg HR <span class="ar">↓</span></th>
+                <th data-sort="load" class="hide-sm">Load <span class="ar">↓</span></th>
+              </tr>
+            </thead>
+            <tbody id="acts-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="map-note" id="map-note">
+        Data fetched manually from intervals.icu via <code>fetch_data.py</code> and baked to a static file — the site stays fully static. Map &copy; MapTiler &amp; OpenStreetMap contributors.
+      </p>
     </section>
 
     <!-- CONNECT -->
@@ -374,5 +461,14 @@ window.MISC = {
 };
 </script>
 <script src="script.js"></script>
+<script>
+  /* _about section movement map — dark basemap to match the dark mode */
+  window.MAP_CONFIG = {
+    maptilerKey: 'hDiwDUe2ifjNNofNRaM3',
+    style: 'dataviz-dark',
+    dataUrl: 'assets/data/activities.json'
+  };
+</script>
+<script src="map.js"></script>
 </body>
 </html>

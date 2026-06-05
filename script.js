@@ -406,4 +406,66 @@
       clearTimeout(rt); rt = setTimeout(build, 160);
     }, { passive: true });
   })();
+
+  /* ---- about section: scroll-triggered dark mode ----
+     When the about section covers >=25% of the viewport (reached by
+     scrolling or by clicking _about in the nav), the dark theme washes
+     over the whole page; it reverts to light once you leave the section
+     (the connect section below stays light). body.theme-anim makes the
+     swap gradual in both directions. */
+  (function () {
+    var about = document.getElementById('about');
+    if (!about) return;
+    var body = document.body;
+    var dark = false, animT, ticking = false;
+
+    function apply() {
+      ticking = false;
+      var r = about.getBoundingClientRect();
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      // dark once the about section's top rises into the lower quarter (>=25%
+      // of the viewport is the about zone) and stays dark through connect below;
+      // reverts only when you scroll back up above the about section.
+      var want = r.top <= vh * 0.75;
+      if (want === dark) return;
+      dark = want;
+      body.classList.add('theme-anim');
+      body.classList.toggle('about-dark', dark);
+      clearTimeout(animT);
+      animT = setTimeout(function () { body.classList.remove('theme-anim'); }, 1000);
+    }
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(apply);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    apply();
+  })();
+
+  /* ---- mobile "show more" (misc projects + kudos) ----
+     Collapse to 3 items and reveal 3 more per tap. The .clamp-hidden class
+     only hides under the mobile breakpoint (CSS), so desktop is unaffected. */
+  (function () {
+    var STEP = 3;
+    document.querySelectorAll('[data-more]').forEach(function (btn) {
+      var container = document.querySelector(btn.getAttribute('data-more'));
+      if (!container) return;
+      var items = Array.prototype.slice.call(
+        container.querySelectorAll(btn.getAttribute('data-more-item')));
+      if (items.length <= STEP) { btn.remove(); return; }
+      var shown = STEP;
+      function render(reveal) {
+        items.forEach(function (it, i) {
+          var hide = i >= shown;
+          it.classList.toggle('clamp-hidden', hide);
+          if (reveal && !hide) it.classList.add('in'); // skip scroll-reveal for newly shown
+        });
+        btn.classList.toggle('is-exhausted', shown >= items.length);
+      }
+      btn.addEventListener('click', function () { shown += STEP; render(true); });
+      render(false);
+    });
+  })();
 })();
