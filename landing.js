@@ -18,11 +18,7 @@
     window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
   var navigating = false;
-  function go() {
-    /* tell home.html to skip its intro reveal — it's already on screen */
-    try { sessionStorage.setItem('skipIntro', '1'); } catch (e) {}
-    window.location.href = DEST;
-  }
+  function go() { window.location.href = DEST; }
 
   /* deterministic 0..1 jitter so the ripple feels organic, not mechanical */
   function jitter(c, r) {

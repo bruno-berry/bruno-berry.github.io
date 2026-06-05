@@ -117,12 +117,8 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
    INTRO
    ============================================================ */
 .intro__name{ margin-bottom:22px; }
-.intro__name .l{ display:block; overflow:hidden; }
-.intro__name .l span{ display:block; transform:translateY(105%); transition:transform .9s var(--ease); }
-.loaded .intro__name .l span{ transform:translateY(0); }
-.intro__name .l:nth-child(2) span{ transition-delay:.07s; }
-/* arriving from the landing ripple: intro already settled — no slide-in */
-.no-intro .intro__name .l span{ transform:none; transition:none; }
+.intro__name .l{ display:block; }
+.intro__name .l span{ display:block; }
 .intro__title{ font-family:var(--mono); font-size:clamp(13px,1.5vw,15px); color:var(--ink-2); letter-spacing:0.02em; margin-bottom:30px; }
 .intro__title .g{ color:var(--accent-deep); }
 .intro__tag{ font-size:clamp(18px,2.2vw,26px); line-height:1.45; font-weight:500; max-width:32em; color:var(--ink); margin-bottom:40px; letter-spacing:-0.01em; }
