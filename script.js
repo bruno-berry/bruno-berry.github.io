@@ -48,12 +48,22 @@
         navItems[k].classList.toggle('active', k === id);
       });
     }
+    // intro is active on load; observer only takes over once the user has actually scrolled
+    setActive('intro');
+    var visibleSpy = new Set();
+    var spyOrder = Array.from(spyTargets).map(function (t) { return t.getAttribute('data-spy'); });
     var spy = new IntersectionObserver(function (entries) {
+      // stay on intro until user has scrolled away from the top
+      if (window.scrollY < 50) return;
       // ignore section updates while pinned at the very bottom (connect wins there)
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) return;
       entries.forEach(function (e) {
-        if (e.isIntersecting) setActive(e.target.getAttribute('data-spy'));
+        var id = e.target.getAttribute('data-spy');
+        if (e.isIntersecting) visibleSpy.add(id); else visibleSpy.delete(id);
       });
+      for (var i = 0; i < spyOrder.length; i++) {
+        if (visibleSpy.has(spyOrder[i])) { setActive(spyOrder[i]); break; }
+      }
     }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
     spyTargets.forEach(function (t) { spy.observe(t); });
 
