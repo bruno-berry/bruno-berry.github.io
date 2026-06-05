@@ -110,6 +110,10 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 .section{ max-width:none; width:100%; padding:clamp(72px,11vw,150px) clamp(28px,5vw,72px); }
 .section + .section{ border-top:1px solid var(--line); }
 
+/* home page: cap the content column at 1440px and centre it within the
+   space beside the rail — full-bleed responsive below, never wider above */
+.main--capped .section{ max-width:1440px; margin-inline:auto; }
+
 .sectlabel{ font-family:var(--mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent-deep); margin-bottom:30px; display:block; }
 .sectlabel::before{ content:'_'; }
 
@@ -136,6 +140,8 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 .btn:hover svg{ transform:translate(3px,-3px); }
 .btn--solid{ background:var(--accent); border-color:var(--accent); color:var(--ink); font-weight:700; }
 .btn--solid:hover{ background:var(--accent-deep); border-color:var(--accent-deep); color:#fff; }
+/* résumé button (home intro) reads at normal weight, like the LinkedIn one beside it */
+.main--capped .btn--solid{ font-weight:400; }
 .btn--ink{ background:var(--ink); border-color:var(--ink); color:var(--bg); }
 .btn--ink:hover{ background:var(--accent); border-color:var(--accent); color:var(--ink); }
 
@@ -149,6 +155,14 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
   border-top:1px solid var(--line); position:relative;
 }
 .keyproj:first-child{ border-top:none; }
+/* hover highlight — soft gray fill, rounded to match the misc tiles, no border */
+.keyproj::before{
+  content:''; position:absolute; inset:10px -24px; z-index:0; pointer-events:none;
+  background:rgba(21,21,15,0.06); border-radius:13px;
+  opacity:0; transition:opacity .4s var(--ease);
+}
+.keyproj > *{ position:relative; z-index:1; }
+.keyproj:hover::before{ opacity:1; }
 .keyproj__media{ overflow:hidden; border-radius:12px; background:var(--surface); border:1px solid var(--line); order:2; }
 .keyproj__media img{ width:100%; height:auto; max-height:600px; object-fit:cover; display:block; transition:transform .7s var(--ease), filter .5s; filter:saturate(0.96); }
 .keyproj:hover .keyproj__media img{ transform:scale(1.05); filter:saturate(1.05); }
