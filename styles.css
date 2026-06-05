@@ -556,14 +556,17 @@ body.landing{
   background:var(--land-bg);
   color:var(--land-ink);
   overflow:hidden;
-  /* pattern inverted: light dots on the dark field */
-  background-image:radial-gradient(rgba(246,246,241,0.05) 1px, transparent 1px);
-  background-size:4px 4px;
 }
 body.landing ::selection{ background:var(--accent); color:var(--ink); }
 
+/* interactive dot field — drawn + animated by landing-dots.js */
+.land__dots{
+  position:fixed; inset:0; width:100%; height:100%;
+  z-index:0; pointer-events:none;
+}
+
 .land{
-  position:relative; min-height:100vh; min-height:100svh;
+  position:relative; z-index:1; min-height:100vh; min-height:100svh;
   display:flex; align-items:center; justify-content:center;
   padding:clamp(28px,6vw,80px); text-align:left; overflow:hidden;
 }
@@ -592,7 +595,7 @@ body.landing ::selection{ background:var(--accent); color:var(--ink); }
 }
 .land__tag em{ font-style:italic; color:var(--accent); font-weight:600; }
 
-.land__cta{ animation:land-rise .8s var(--ease) both .28s; }
+.land__cta{ align-self:stretch; justify-content:center; animation:land-rise .8s var(--ease) both .28s; }
 .land__cta:hover{ background:#8ed152; border-color:#8ed152; color:var(--ink); }
 .land__cta:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
 
