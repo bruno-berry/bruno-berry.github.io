@@ -578,26 +578,33 @@ body.landing ::selection{ background:var(--accent); color:var(--ink); }
 /* eyebrow — same size/style as the intro's _label, recoloured for AA on dark (~6.9:1) */
 .land__eyebrow{
   color:var(--accent); margin-bottom:clamp(20px,3vw,28px);
-  animation:land-rise .7s var(--ease) both;
 }
 
 .land__name{ margin-bottom:clamp(18px,2.6vw,28px); color:var(--land-ink); }
 .land__name .l{ display:block; overflow:hidden; }
-.land__name .l span{ display:block; animation:line-rise .9s var(--ease) both; }
-.land__name .l:nth-child(1) span{ animation-delay:.05s; }
-.land__name .l:nth-child(2) span{ animation-delay:.12s; }
+.land__name .l span{ display:block; }
 
 .land__tag{
   font-size:clamp(18px,2.4vw,28px); line-height:1.45; font-weight:500;
   letter-spacing:-0.01em; color:var(--land-ink);
   max-width:30ch; margin-bottom:clamp(32px,5vw,46px);
-  animation:land-rise .8s var(--ease) both .18s;
 }
 .land__tag em{ font-style:italic; color:var(--accent); font-weight:600; }
 
-.land__cta{ align-self:stretch; justify-content:center; animation:land-rise .8s var(--ease) both .28s; }
+.land__cta{ align-self:stretch; justify-content:center; }
 .land__cta:hover{ background:#8ed152; border-color:#8ed152; color:var(--ink); }
 .land__cta:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+/* Entrance animations are pure enhancement — content is visible by default,
+   so a deferred/aborted animation can never leave it stuck invisible. */
+@media (prefers-reduced-motion: no-preference){
+  .land__eyebrow{ animation:land-rise .7s var(--ease) both; }
+  .land__name .l span{ animation:line-rise .9s var(--ease) both; }
+  .land__name .l:nth-child(1) span{ animation-delay:.05s; }
+  .land__name .l:nth-child(2) span{ animation-delay:.12s; }
+  .land__tag{ animation:land-rise .8s var(--ease) both .18s; }
+  .land__cta{ animation:land-rise .8s var(--ease) both .28s; }
+}
 
 @keyframes line-rise{ from{ transform:translateY(110%); } to{ transform:translateY(0); } }
 @keyframes land-rise{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
