@@ -121,6 +121,8 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 .intro__name .l span{ display:block; transform:translateY(105%); transition:transform .9s var(--ease); }
 .loaded .intro__name .l span{ transform:translateY(0); }
 .intro__name .l:nth-child(2) span{ transition-delay:.07s; }
+/* arriving from the landing ripple: intro already settled — no slide-in */
+.no-intro .intro__name .l span{ transform:none; transition:none; }
 .intro__title{ font-family:var(--mono); font-size:clamp(13px,1.5vw,15px); color:var(--ink-2); letter-spacing:0.02em; margin-bottom:30px; }
 .intro__title .g{ color:var(--accent-deep); }
 .intro__tag{ font-size:clamp(18px,2.2vw,26px); line-height:1.45; font-weight:500; max-width:32em; color:var(--ink); margin-bottom:40px; letter-spacing:-0.01em; }
@@ -547,4 +549,81 @@ table.acts thead th.nosort:hover{ color:var(--ink-3); }
 
 @media (max-width:760px){
   table.acts .hide-sm{ display:none; }
+}
+
+/* ============================================================
+   LANDING  (dark-mode entry page — index.html)
+   Deep-green field · inverted pattern · ripple-out transition
+   ============================================================ */
+body.landing{
+  --land-bg:   #061308;   /* deep forest green field */
+  --land-ink:  #f6f6f1;   /* inverted text — ~16:1 on field */
+  background:var(--land-bg);
+  color:var(--land-ink);
+  overflow:hidden;
+  /* pattern inverted: light dots on the dark field */
+  background-image:radial-gradient(rgba(246,246,241,0.05) 1px, transparent 1px);
+  background-size:4px 4px;
+}
+body.landing ::selection{ background:var(--accent); color:var(--ink); }
+
+.land{
+  position:relative; min-height:100vh; min-height:100svh;
+  display:flex; align-items:center; justify-content:center;
+  padding:clamp(28px,6vw,80px); text-align:left; overflow:hidden;
+}
+.land__inner{
+  display:flex; flex-direction:column; align-items:flex-start;
+  width:fit-content; max-width:100%;
+}
+
+/* eyebrow — same size/style as the intro's _label, recoloured for AA on dark (~6.9:1) */
+.land__eyebrow{
+  color:var(--accent); margin-bottom:clamp(20px,3vw,28px);
+  animation:land-rise .7s var(--ease) both;
+}
+
+.land__name{ margin-bottom:clamp(18px,2.6vw,28px); color:var(--land-ink); }
+.land__name .l{ display:block; overflow:hidden; }
+.land__name .l span{ display:block; animation:line-rise .9s var(--ease) both; }
+.land__name .l:nth-child(1) span{ animation-delay:.05s; }
+.land__name .l:nth-child(2) span{ animation-delay:.12s; }
+
+.land__tag{
+  font-size:clamp(18px,2.4vw,28px); line-height:1.45; font-weight:500;
+  letter-spacing:-0.01em; color:var(--land-ink);
+  max-width:30ch; margin-bottom:clamp(32px,5vw,46px);
+  animation:land-rise .8s var(--ease) both .18s;
+}
+.land__tag em{ font-style:italic; color:var(--accent); font-weight:600; }
+
+.land__cta{ animation:land-rise .8s var(--ease) both .28s; }
+.land__cta:hover{ background:#8ed152; border-color:#8ed152; color:var(--ink); }
+.land__cta:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+@keyframes line-rise{ from{ transform:translateY(110%); } to{ transform:translateY(0); } }
+@keyframes land-rise{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
+
+/* ── ripple curtain (built by landing.js on Explore) ───────── */
+.curtain{ position:fixed; inset:0; z-index:9999; pointer-events:none; }
+/* light fallback under the iframe so a slow paint never flashes white */
+.curtain__reveal{
+  position:absolute; inset:0; background:var(--bg);
+  background-image:radial-gradient(rgba(21,21,15,0.022) 1px, transparent 1px);
+  background-size:4px 4px;
+}
+/* the real home page, rendered behind the tiles and revealed as they dissolve */
+.curtain__frame{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.curtain__grid{ position:absolute; inset:0; display:grid; gap:0; }
+.curtain__tile{
+  background:var(--land-bg); transform-origin:center;
+  /* 1px green ring masks sub-pixel seams between fractional grid tracks;
+     it scales + fades with the tile, so the dissolve still reveals light */
+  box-shadow:0 0 0 1px var(--land-bg);
+  will-change:transform,opacity;
+}
+@keyframes tile-out{ to{ opacity:0; transform:scale(.6); } }
+
+@media (max-width:620px){
+  .land__tag{ max-width:24ch; }
 }
