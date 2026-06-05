@@ -179,9 +179,8 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 /* ============================================================
    MISC PROJECTS — bento (open modals)
    ============================================================ */
-/* misc header — matches the key-project eyebrow + title structure */
-.misc-head{ margin:clamp(64px,9vw,110px) 0 28px; }
-.misc-head .keyproj__title{ margin-bottom:0; }
+/* misc header — a section eyebrow matching the _projects label */
+.misc-head{ margin-top:clamp(64px,9vw,110px); }
 
 .bento{ display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:148px; gap:13px; }
 .tile{
@@ -194,7 +193,10 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 .tile:focus-visible{ outline:2px solid var(--accent-deep); outline-offset:2px; }
 .tile--feature{ grid-column:span 2; grid-row:span 2; }
 .tile--half{ grid-column:span 2; grid-row:span 1; }
+.tile--w3{ grid-column:span 3; grid-row:span 1; }
+.tile--w1{ grid-column:span 1; grid-row:span 1; }
 .tile--wide{ grid-column:1 / -1; grid-row:span 2; }
+.tile--w1 .tile__title{ font-size:clamp(16px,1.6vw,19px); }
 .tile__top{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
 .tile__co{ font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); }
 .tile__plus{ width:30px; height:30px; border-radius:50%; border:1px solid var(--line-2); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .35s var(--ease), border-color .35s, transform .45s var(--ease); }
@@ -227,12 +229,12 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 .tms__head{ font-weight:800; letter-spacing:-0.03em; line-height:1.0; font-size:clamp(32px,5vw,58px); margin-bottom:18px; }
 .tms__lead{ color:var(--ink-2); font-size:clamp(16px,1.9vw,20px); line-height:1.6; max-width:54ch; font-weight:500; margin-bottom:clamp(36px,5vw,62px); }
 
-.tms__grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; align-items:start; }
-.tms-col{ display:flex; flex-direction:column; gap:18px; }
-.tms-col--offset{ margin-top:clamp(36px,5vw,72px); } /* staggered vertical offset */
+/* four-across masonry — cards keep their natural height and pack cleanly */
+.tms__grid{ columns:4; column-gap:18px; }
 
 .tcard{
   position:relative; display:flex; flex-direction:column; gap:15px;
+  break-inside:avoid; -webkit-column-break-inside:avoid; margin:0 0 18px;
   background:var(--surface); border:1px solid var(--line); border-radius:14px;
   padding:24px 24px 22px;
   transition:transform .45s var(--ease), border-color .35s, box-shadow .45s;
@@ -249,12 +251,10 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 .tcard__proj{ font-family:var(--mono); font-size:10px; letter-spacing:0.03em; color:var(--ink-4); line-height:1.4; }
 .tcard__proj::before{ content:'_'; color:var(--accent-deep); }
 
-/* below the 3-up layout, stack into a single clean column (no offset) */
-@media (max-width:1080px){
-  .tms__grid{ grid-template-columns:1fr; gap:16px; }
-  .tms-col{ gap:16px; }
-  .tms-col--offset{ margin-top:0; }
-}
+/* fewer columns as the viewport narrows */
+@media (max-width:1080px){ .tms__grid{ columns:3; } }
+@media (max-width:820px){ .tms__grid{ columns:2; } }
+@media (max-width:560px){ .tms__grid{ columns:1; } }
 
 /* ============================================================
    MODAL
@@ -387,7 +387,8 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 
   .bento{ grid-template-columns:repeat(2,1fr); }
   .tile--feature{ grid-column:span 2; grid-row:span 2; }
-  .tile--half{ grid-column:span 1; grid-row:span 1; }
+  .tile--half,.tile--w3{ grid-column:span 2; grid-row:span 1; }
+  .tile--w1{ grid-column:span 1; grid-row:span 1; }
 
   .topbar{
     display:flex; align-items:center; justify-content:space-between;
@@ -408,7 +409,7 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 
 @media (max-width:620px){
   .bento{ grid-template-columns:1fr; grid-auto-rows:auto; }
-  .tile--feature,.tile--half{ grid-column:span 1; grid-row:span 1; min-height:170px; }
+  .tile--feature,.tile--half,.tile--w3,.tile--w1{ grid-column:span 1; grid-row:span 1; min-height:170px; }
   .stats{ grid-template-columns:1fr; }
   .intro__links{ gap:9px; }
 }
@@ -544,48 +545,6 @@ table.acts thead th.nosort:hover{ color:var(--ink-3); }
 
 @media (max-width:760px){
   table.acts .hide-sm{ display:none; }
-}
-
-/* ============================================================
-   CLIENT MARQUEE  (top of Projects — endless horizontal scroll)
-   Wordmarks unified in the accent green; JS clones the group and
-   measures it so the loop is seamless at any width.
-   ============================================================ */
-.logos{
-  position:relative;
-  margin:4px 0 clamp(40px,6vw,66px);
-  overflow:hidden;
-  /* soft fade into the page at both edges */
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
-          mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
-}
-.logos__track{ display:flex; width:max-content; will-change:transform; }
-.logos.is-ready .logos__track{
-  animation:logos-scroll var(--dur,40s) linear infinite;
-}
-
-.logos__group{
-  display:flex; align-items:center; flex:0 0 auto;
-  gap:clamp(40px,5vw,74px);
-  padding-right:clamp(40px,5vw,74px);   /* same as gap → uniform across the seam */
-  margin:0; list-style:none;
-}
-/* each logo is a single-colour silhouette: the artwork is an alpha mask,
-   the accent green is painted through it — so every brand reads as one hue */
-.logo{
-  flex:0 0 auto;
-  height:calc(clamp(32px,3.45vw,48px) * var(--s,1));
-  aspect-ratio:var(--ar,3);
-  background-color:var(--accent);
-  -webkit-mask:var(--logo) center / contain no-repeat;
-          mask:var(--logo) center / contain no-repeat;
-}
-
-@keyframes logos-scroll{ to{ transform:translateX(calc(-1 * var(--shift,33.333%))); } }
-
-@media (prefers-reduced-motion: reduce){
-  .logos{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
-  .logos.is-ready .logos__track{ animation:none; }
 }
 
 /* ============================================================
