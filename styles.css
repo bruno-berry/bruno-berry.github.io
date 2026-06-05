@@ -574,7 +574,7 @@ table.acts thead th.nosort:hover{ color:var(--ink-3); }
    the accent green is painted through it — so every brand reads as one hue */
 .logo{
   flex:0 0 auto;
-  height:calc(clamp(21px,2.3vw,32px) * var(--s,1));
+  height:calc(clamp(32px,3.45vw,48px) * var(--s,1));
   aspect-ratio:var(--ar,3);
   background-color:var(--accent);
   -webkit-mask:var(--logo) center / contain no-repeat;
