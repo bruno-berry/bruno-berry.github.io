@@ -179,10 +179,9 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 /* ============================================================
    MISC PROJECTS — bento (open modals)
    ============================================================ */
-.subhead{ display:flex; align-items:baseline; gap:14px; margin:clamp(64px,9vw,110px) 0 28px; }
-.subhead h3{ font-family:var(--mono); font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink); }
-.subhead h3::before{ content:'_'; color:var(--accent-deep); }
-.subhead .hint{ font-family:var(--mono); font-size:10.5px; color:var(--ink-4); }
+/* misc header — matches the key-project eyebrow + title structure */
+.misc-head{ margin:clamp(64px,9vw,110px) 0 28px; }
+.misc-head .keyproj__title{ margin-bottom:0; }
 
 .bento{ display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:148px; gap:13px; }
 .tile{
