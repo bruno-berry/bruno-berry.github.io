@@ -423,10 +423,10 @@
       ticking = false;
       var r = about.getBoundingClientRect();
       var vh = window.innerHeight || document.documentElement.clientHeight;
-      // dark once the about section's top rises into the lower quarter (>=25%
-      // of the viewport is the about zone) and stays dark through connect below;
-      // reverts only when you scroll back up above the about section.
-      var want = r.top <= vh * 0.75;
+      // dark once the about section's top reaches the viewport's vertical
+      // midpoint (the section now fills ~50% of the screen), and stays dark
+      // through connect below; reverts only when you scroll back up above it.
+      var want = r.top <= vh * 0.5;
       if (want === dark) return;
       dark = want;
       body.classList.add('theme-anim');
