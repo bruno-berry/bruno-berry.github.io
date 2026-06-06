@@ -486,10 +486,10 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 .map-sel__x{ width:22px; height:22px; border-radius:50%; border:1px solid var(--line-2); display:flex; align-items:center; justify-content:center; font-size:14px; line-height:1; color:var(--ink); transition:background .25s, transform .25s var(--ease); }
 .map-sel__x:hover{ background:var(--accent); transform:rotate(90deg); }
 /* location filter */
-.locfilter{ display:inline-flex; align-items:center; gap:9px; background:var(--surface); border:1px solid var(--line); border-radius:100px; padding:5px 6px 5px 15px; }
-.locfilter__lbl{ font-family:var(--mono); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-3); }
+.locfilter{ display:inline-flex; align-items:center; gap:9px; max-width:100%; min-width:0; background:var(--surface); border:1px solid var(--line); border-radius:100px; padding:5px 6px 5px 15px; }
+.locfilter__lbl{ flex:0 0 auto; font-family:var(--mono); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-3); }
 .locfilter__lbl::before{ content:'_'; color:var(--accent-deep); }
-.locfilter__sel{ font-family:var(--mono); font-size:11px; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:100px; padding:7px 30px 7px 13px; cursor:pointer; transition:border-color .25s;
+.locfilter__sel{ flex:1 1 auto; min-width:0; max-width:100%; text-overflow:ellipsis; font-family:var(--mono); font-size:11px; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:100px; padding:7px 30px 7px 13px; cursor:pointer; transition:border-color .25s;
   -webkit-appearance:none; appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%234c8a27' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat:no-repeat; background-position:right 12px center; }
@@ -574,6 +574,9 @@ table.acts thead th.nosort:hover{ color:var(--ink-3); }
 
 @media (max-width:760px){
   table.acts .hide-sm{ display:none; }
+}
+@media (max-width:560px){
+  .locfilter{ flex:1 1 100%; }
 }
 
 /* ============================================================
