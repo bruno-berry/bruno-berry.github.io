@@ -4,3 +4,10 @@ assets/data/.cache/
 # python
 __pycache__/
 *.pyc
+
+# secrets
+.env
+tools/.env
+
+# personal reference material
+job descriptions.pdf
