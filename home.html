@@ -8,11 +8,36 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="styles.css" />
-<!-- MapLibre GL (renders the MapTiler vector style in the _about section) -->
+<!-- MapLibre GL (renders the MapTiler vector style in the _about section).
+     Deferred so it never blocks first paint of the page / landing splash. -->
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
-<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js" defer></script>
+<!-- Show the landing splash only on a bare front-door visit; skip it when
+     arriving at a section (deep link / return from a project page). Runs
+     before paint so the overlay never flashes when it should be skipped. -->
+<script>if(location.hash&&location.hash!=='#')document.documentElement.className+=' no-landing';</script>
+<noscript><style>.landfront{display:none!important}</style></noscript>
 </head>
 <body>
+
+<!-- ░░ LANDING SPLASH ░░  Sits over the live page in the same document and
+     dissolves (ripple) to reveal it — no iframe, no second page load. -->
+<div class="landfront" id="landfront">
+  <canvas class="land__dots" id="land-dots" aria-hidden="true"></canvas>
+  <main class="land" id="land">
+    <div class="land__inner" id="land-inner">
+      <span class="sectlabel land__eyebrow">landing</span>
+      <h1 class="display land__name">
+        <span class="l"><span>Bruno B.</span></span>
+        <span class="l"><span>Berry</span></span>
+      </h1>
+      <p class="land__tag">I design clarity into <em>large, complex, ambiguous</em> systems — from data analytics to enterprise tools to agentic AI.</p>
+      <a href="#intro" class="btn btn--solid land__cta" id="explore">Explore Now
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6.2v13.8l6-2.2 6 2.2 6-2.2V4l-6 2.2L9 4Z"/><path d="M9 4v13.8M15 6.2V20"/></svg>
+      </a>
+    </div>
+  </main>
+</div>
 
 <!-- dark-mode wash layer (spills up the page from the _about section) -->
 <div id="darkwash" aria-hidden="true"></div>
@@ -468,6 +493,9 @@ window.MISC = {
     dataUrl: 'assets/data/activities.json'
   };
 </script>
-<script src="map.js"></script>
+<script src="map.js" defer></script>
+<!-- landing splash: dot field + ripple-dissolve over the live page -->
+<script src="landing-dots.js"></script>
+<script src="landing.js"></script>
 </body>
 </html>

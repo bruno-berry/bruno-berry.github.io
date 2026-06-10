@@ -2,34 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<!-- The site is one document: home.html renders the page with the landing
+     splash overlaid on top. This root entry redirects there instantly. The
+     green background matches the splash so the hop is seamless (no flash),
+     and the hash is preserved so deep links still land on the right section. -->
+<script>location.replace('home.html' + location.search + location.hash);</script>
+<meta http-equiv="refresh" content="0; url=home.html" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Bruno B. Berry</title>
 <meta name="description" content="Bruno B. Berry — designing clarity into large, complex, ambiguous systems. Data visualization, enterprise systems, and agentic AI." />
 <meta name="theme-color" content="#061308" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="styles.css" />
-<link rel="prefetch" href="home.html" />
+<link rel="canonical" href="home.html" />
+<style>html,body{margin:0;height:100%;background:#061308}</style>
 </head>
-<body class="landing">
-
-  <canvas class="land__dots" id="land-dots" aria-hidden="true"></canvas>
-
-  <main class="land" id="land">
-    <div class="land__inner" id="land-inner">
-      <span class="sectlabel land__eyebrow">landing</span>
-      <h1 class="display land__name">
-        <span class="l"><span>Bruno B.</span></span>
-        <span class="l"><span>Berry</span></span>
-      </h1>
-      <p class="land__tag">I design clarity into <em>large, complex, ambiguous</em> systems — from data analytics to enterprise tools to agentic AI.</p>
-      <a href="home.html" class="btn btn--solid land__cta" id="explore">Explore Now
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6.2v13.8l6-2.2 6 2.2 6-2.2V4l-6 2.2L9 4Z"/><path d="M9 4v13.8M15 6.2V20"/></svg>
-      </a>
-    </div>
-  </main>
-
-  <script src="landing-dots.js"></script>
-  <script src="landing.js"></script>
+<body>
+  <noscript><a href="home.html" style="color:#f6f6f1;font-family:system-ui,sans-serif;display:inline-block;padding:24px">Enter &rarr;</a></noscript>
 </body>
 </html>

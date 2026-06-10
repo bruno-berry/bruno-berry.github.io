@@ -29,6 +29,12 @@
 
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
 html{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+/* Reserve the scrollbar gutter on every scrolling page so centred content sits
+   in the same place whether or not a scrollbar is present. This also keeps the
+   decorative, scroll-disabled home iframe in the landing→home ripple identical
+   to the real page it hands off to, so content no longer shifts left on landing.
+   Excludes the landing page, which is viewport-height with no scroll. */
+html:has(body:not(.landing)){ scrollbar-gutter:stable; }
 body{
   font-family:var(--sans);
   background:var(--bg);
@@ -683,14 +689,20 @@ body.theme-anim, body.theme-anim *{
    LANDING  (dark-mode entry page — index.html)
    Deep-green field · inverted pattern · ripple-out transition
    ============================================================ */
-body.landing{
+/* The splash now lives as a fixed overlay ON the live home page (#landfront),
+   in the same document — no iframe, no navigation. It covers everything, then
+   landing.js dissolves it to reveal the already-loaded page beneath. The green
+   field + theme vars sit on the overlay rather than on <body>. */
+.landfront{
   --land-bg:   #061308;   /* deep forest green field */
   --land-ink:  #f6f6f1;   /* inverted text — ~16:1 on field */
+  position:fixed; inset:0; z-index:9998; overflow:hidden;
   background:var(--land-bg);
   color:var(--land-ink);
-  overflow:hidden;
 }
-body.landing ::selection{ background:var(--accent); color:var(--ink); }
+/* skipped on deep links / returns from a project (set by an inline head script) */
+.no-landing .landfront{ display:none; }
+.landfront ::selection{ background:var(--accent); color:var(--ink); }
 
 /* interactive dot field — drawn + animated by landing-dots.js */
 .land__dots{
@@ -724,7 +736,7 @@ body.landing ::selection{ background:var(--accent); color:var(--ink); }
 }
 .land__tag em{ font-style:italic; color:var(--accent); font-weight:600; }
 
-.land__cta{ align-self:stretch; justify-content:center; }
+.land__cta{ align-self:stretch; justify-content:center; font-weight:400; }
 .land__cta:hover{ background:#8ed152; border-color:#8ed152; color:var(--ink); }
 .land__cta:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
 
@@ -742,25 +754,8 @@ body.landing ::selection{ background:var(--accent); color:var(--ink); }
 @keyframes line-rise{ from{ transform:translateY(110%); } to{ transform:translateY(0); } }
 @keyframes land-rise{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
 
-/* ── ripple curtain (built by landing.js on Explore) ───────── */
-.curtain{ position:fixed; inset:0; z-index:9999; pointer-events:none; }
-/* light fallback under the iframe so a slow paint never flashes white */
-.curtain__reveal{
-  position:absolute; inset:0; background:var(--bg);
-  background-image:radial-gradient(rgba(21,21,15,0.022) 1px, transparent 1px);
-  background-size:4px 4px;
-}
-/* the real home page, rendered behind the tiles and revealed as they dissolve */
-.curtain__frame{ position:absolute; inset:0; width:100%; height:100%; border:0; }
-.curtain__grid{ position:absolute; inset:0; display:grid; gap:0; }
-.curtain__tile{
-  background:var(--land-bg); transform-origin:center;
-  /* 1px green ring masks sub-pixel seams between fractional grid tracks;
-     it scales + fades with the tile, so the dissolve still reveals light */
-  box-shadow:0 0 0 1px var(--land-bg);
-  will-change:transform,opacity;
-}
-@keyframes tile-out{ to{ opacity:0; transform:scale(.6); } }
+/* The dissolve ripple is a single full-screen <canvas> created by landing.js
+   on Explore (inline-styled), so no curtain/iframe CSS is needed here. */
 
 @media (max-width:620px){
   .land__tag{ max-width:24ch; }
